@@ -1,0 +1,130 @@
+% !TeX encoding=UTF-8
+%% The LaTeX package tikzfill - version 1.0.0 (2022/07/20)
+%% tikzfill-doc.sty: style file for the documentation
+%%
+%% -------------------------------------------------------------------------------------------
+%% Copyright (c) 2022-2022 by Prof. Dr. Dr. Thomas F. Sturm <thomas dot sturm at unibw dot de>
+%% -------------------------------------------------------------------------------------------
+%%
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.3
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%   http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of LaTeX
+%% version 2005/12/01 or later.
+%%
+%% This work has the LPPL maintenance status `author-maintained'.
+%%
+%% This work consists of all files listed in README.md
+%%
+\def\version{1.0.0}%
+\def\datum{2022/07/20}%
+
+\def\tikzfillpkgprefix{}
+\IfFileExists{tikzfill-doc.cfg}{\input{tikzfill-doc.cfg}}{}
+
+% prevent hypdoc from loading (sets hyperindex=false)
+%\@namedef{ver@hypdoc.sty}{9999/12/31}
+%\@namedef{opt@hypdoc.sty}{hypdoc}
+
+
+\RequirePackage[T1]{fontenc}
+\RequirePackage[utf8]{inputenc}
+\RequirePackage[english]{babel}
+\RequirePackage{lmodern,parskip,array,makeidx}
+\RequirePackage{amsmath,amssymb}
+\RequirePackage[svgnames,table,hyperref]{xcolor}
+\RequirePackage{tikz,siunitx,xfp,tabularray}
+\usetikzlibrary{patterns,shadings,fadings}
+\RequirePackage{varioref}
+\RequirePackage[pdftex,bookmarks,raiselinks,pageanchor,hyperindex,colorlinks]{hyperref}
+\urlstyle{sf}
+\RequirePackage{cleveref}
+
+\RequirePackage[a4paper,left=2.5cm,right=2.5cm,top=1.5cm,bottom=1.5cm,
+    marginparsep=3mm,marginparwidth=18mm,
+    headheight=0mm,headsep=0cm,
+    footskip=1.5cm,includeheadfoot]{geometry}
+\RequirePackage{fancyhdr}
+\fancyhf{}
+\fancyfoot[C]{\thepage}%
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\pagestyle{fancy}
+\tolerance=2000%
+\setlength{\emergencystretch}{20pt}%
+
+\RequirePackage{longtable,booktabs,ifthen,etoolbox}
+
+\RequirePackage{shortvrb}
+\AtBeginDocument{\MakeShortVerb{\|}}
+
+\RequirePackage{tcolorbox}
+\tcbuselibrary{skins,minted,breakable,documentation,raster,hooks}
+
+\definecolor{Green_Dark}{rgb}{0.078431,0.407843,0.176471}
+\definecolor{Blue_Dark}{rgb}{0.090196,0.211765,0.364706}
+\definecolor{Blue_Bright}{rgb}{0.858824,0.898039,0.945098}
+
+\tcbset{skin=enhanced,
+  sbs/.style={sidebyside,before lower app={\tcbset{sidebyside=false}}},
+  minted options={fontsize=\footnotesize},
+  doc raster={raster before skip=4mm plus 2mm minus 1mm},
+  doc head={colback=yellow!10!white,interior style=fill},
+  doc head key={colback=magenta!5!white,interior style=fill},
+  color key=DarkViolet,
+  color value=Teal,
+  color color=Teal,
+  color counter=Orange!85!black,
+  color length=Orange!85!black,
+  index colorize,
+  index annotate,
+  beforeafter example/.style={
+    before skip balanced=4pt plus 2pt minus 1pt,
+    after skip balanced=6pt plus 2pt minus 1pt
+  },
+  docexample/.style={bicolor,
+    beforeafter example,
+    arc is angular,fonttitle=\bfseries,
+    fontlower=\footnotesize,
+    colframe=green!25!yellow!50!black,
+    colback=green!25!yellow!7,
+    colbacklower=white,
+    drop fuzzy shadow=green!25!yellow!50!black,
+    listing engine=minted,
+    documentation minted style=colorful,
+    documentation minted options={fontsize=\footnotesize},
+    },
+}
+
+\renewcommand*{\tcbdocnew}[1]{\textcolor{green!50!black}{\sffamily\bfseries N} #1}
+\renewcommand*{\tcbdocupdated}[1]{\textcolor{blue!75!black}{\sffamily\bfseries U} #1}
+
+\NewDocumentCommand{\csvsorter}{}{\textsf{\bfseries\color{red!20!black}CSV-Sorter}}
+
+\newtcbinputlisting{\csvlisting}[1]{docexample,minted options={fontsize=\footnotesize},minted language=latex,
+  fonttitle=\bfseries,listing only,title={CSV file \flqq\texttt{\detokenize{#1.csv}}\frqq},listing file=#1.csv}
+
+\newtcbinputlisting{\xmllisting}[1]{docexample,minted options={fontsize=\footnotesize},minted language=xml,
+  fonttitle=\bfseries,listing only,title={Configuration file \flqq\texttt{\detokenize{#1.xml}}\frqq},listing file=#1.xml}
+
+\NewTotalTCBox{\verbbox}{m}{enhanced,on line,size=fbox,frame empty,colback=red!5!white,
+  colupper=red!85!black,fontupper=\bfseries\ttfamily}{\detokenize{"}#1\detokenize{"}}
+
+\NewDocumentCommand{\ctanpkg}{m}
+  {%
+     \href{https://ctan.org/pkg/#1}{\texttt{#1}}%
+  }
+
+\def\tikzname{Ti\emph{k}Z}
+
+\tcbmakedocSubKey{docTikzKey}{tikz}
+\tcbmakedocSubKeys{docTikzKeys}{tikz}
+\tcbmakedocSubKey{docPatternKey}{pgf/pattern keys}
+\tcbmakedocSubKeys{docPatternKeys}{pgf/pattern keys}
+
+
+\makeindex
+
+\pdfsuppresswarningpagegroup=1
