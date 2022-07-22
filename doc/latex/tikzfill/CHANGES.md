@@ -17,7 +17,25 @@ and this project adheres to
 
 
 
-## [1.00] - 2022-07-20
+## [1.0.1] - 2022-xx-xx
+
+### Added
+- Input of `expl3-generic` where `ExplSyntaxOn` is not defined (issue #1)
+
+### Changed
+### Deprecated
+
+### Removed
+- Library `fill.image`: Unused code fragments
+
+### Fixed
+- Spelling of LaTeX etc. inside the documentation (issue #1)
+
+### Security
+
+
+
+## [1.0.0] - 2022-07-20
 
 ### Added
 - Initial public release

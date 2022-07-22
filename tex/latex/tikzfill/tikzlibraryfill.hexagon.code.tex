@@ -1,4 +1,4 @@
-%% The LaTeX package tikzfill - version 1.0.0 (2022/07/20)
+%% The LaTeX package tikzfill - version 1.0.1pre1 (2022/07/22)
 %% tikzlibraryfill.hexagon.code.tex: filling with hexagon patterns
 %%
 %% -------------------------------------------------------------------------------------------
@@ -17,10 +17,13 @@
 %%
 %% This work consists of all files listed in README.md
 %%
-\ProvidesFile{tikzlibraryfill.hexagon.code.tex}[2022/07/20 v1.0.0 Hexagon pattern library]
+\ProvidesFile{tikzlibraryfill.hexagon.code.tex}[2022/07/22 v1.0.1pre1 Hexagon pattern library]
 
 \usetikzlibrary{patterns.meta}
 
+\ifx\ExplSyntaxOn\undefined
+  \input expl3-generic\relax
+\fi
 \ExplSyntaxOn
 
 \int_new:N \l__tikzfill_hex_ring_int

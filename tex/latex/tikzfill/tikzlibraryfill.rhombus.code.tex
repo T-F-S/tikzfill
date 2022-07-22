@@ -1,4 +1,4 @@
-%% The LaTeX package tikzfill - version 1.0.0 (2022/07/20)
+%% The LaTeX package tikzfill - version 1.0.1pre1 (2022/07/22)
 %% tikzlibraryfill.rhombus.code.tex: filling with rhombus patterns
 %%
 %% -------------------------------------------------------------------------------------------
@@ -21,6 +21,9 @@
 
 \usetikzlibrary{patterns.meta}
 
+\ifx\ExplSyntaxOn\undefined
+  \input expl3-generic\relax
+\fi
 \ExplSyntaxOn
 
 \fp_new:N \l__tikzfill_rho_angle_fp

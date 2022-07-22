@@ -1,4 +1,4 @@
-%% The LaTeX package tikzfill - version 1.0.0 (2022/07/20)
+%% The LaTeX package tikzfill - version 1.0.1pre1 (2022/07/22)
 %% tikzlibraryfill.image.code.tex: filling with images
 %%
 %% -------------------------------------------------------------------------------------------
@@ -17,8 +17,11 @@
 %%
 %% This work consists of all files listed in README.md
 %%
-\ProvidesFile{tikzlibraryfill.image.code.tex}[2022/07/20 v1.0.0 Image filling library]
+\ProvidesFile{tikzlibraryfill.image.code.tex}[2022/07/22 v1.0.1pre1 Image filling library]
 
+\ifx\ExplSyntaxOn\undefined
+  \input expl3-generic\relax
+\fi
 \ExplSyntaxOn
 
 \box_new:N \l__tikzfill_img_box
@@ -136,33 +139,6 @@
       { \fp_to_dim:n { \l__tikzfill_img_scale_tl*\l__tikzfill_img_width_tl  }}
       { \fp_to_dim:n { \l__tikzfill_img_scale_tl*\l__tikzfill_img_height_tl }}
     \__tikzfill_img_draw_box:
-  }
-
-
-\cs_new_nopar:Npn \xxxx__tikzfill_img_compute_scales:
-  {
-    \fp_set:Nn \l_tmpa_fl { \box_wd:N \l__tikzfill_img_box }
-    \fp_compare:nNnTF \l_tmpa_fl < {1pt}
-      {
-        \fp_set_eq:NN \l__tikzfill_img_scale_x_fp \c_one_fp
-      }
-      {
-        \fp_set:Nn \l__tikzfill_img_scale_x_fp
-          {
-            \l__tikzfill_img_scale_tl*\l__tikzfill_img_width_tl / \l_tmpa_fl
-          }
-      }
-    \fp_set:Nn \l_tmpb_fl { \box_ht:N \l__tikzfill_img_box + \box_dp:N \l__tikzfill_img_box }
-    \fp_compare:nNnTF \l_tmpb_fl < {1pt}
-      {
-        \fp_set_eq:NN \l__tikzfill_img_scale_y_fp \c_one_fp
-      }
-      {
-        \fp_set:Nn \l__tikzfill_img_scale_y_fp
-          {
-            \l__tikzfill_img_scale_tl*\l__tikzfill_img_height_tl / \l_tmpb_fl
-          }
-      }
   }
 
 

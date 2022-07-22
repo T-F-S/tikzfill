@@ -1,6 +1,6 @@
 % \LaTeX-Main\
 % !TeX encoding=UTF-8
-%% The LaTeX package tikzfill - version 1.0.0 (2022/07/20)
+%% The LaTeX package tikzfill - version 1.0.1pre1 (2022/07/22)
 %% tikzfill.tex: Manual
 %%
 %% -------------------------------------------------------------------------------------------
@@ -22,8 +22,6 @@
 % \RequirePackage[check-declarations,enable-debug]{expl3}
 \documentclass[a4paper,11pt]{article}
 \usepackage{tikzfill-doc}
-
-\usepackage{\tikzfillpkgprefix tikzfill}
 
 \hypersetup{
   pdftitle={Manual for the tikzfill package},
@@ -124,13 +122,13 @@ add further options to fill \tikzname\ paths with images and patterns.
 For \LaTeX, the provided libraries can be loaded using the preferred
 \tikzname\ mechanism by
 \begin{dispListing*}{}
-\usetikzlibrary{fill.***} % LATEX (primary choice) and plain TEX
+\usetikzlibrary{fill.***} % LaTeX (primary choice) and plain TeX
 \end{dispListing*}
 where |***| is to be replaced by the actual library name found on the following pages.
 
 Alternatively, the libraries can be loaded using \LaTeX\ style files
 \begin{dispListing*}{}
-\usepackage{tikzfill.***} % LATEX (secondary choice)
+\usepackage{tikzfill.***} % LaTeX (secondary choice)
 \end{dispListing*}
 
 If you want to load all \tikzname\ libraries of this package, you can use
@@ -146,9 +144,9 @@ the following \LaTeX\ style file
 \section{Image and Picture Fill Library}\label{sec:imagefill}%
 
 \begin{dispListing*}{title=\tikzname\ Library |fill.image|}
-\usetikzlibrary{fill.image} % LATEX (primary choice) and plain TEX
-\usetikzlibrary[fill.image] % ConTEXt
-\usepackage{tikzfill.image} % LATEX (secondary choice)
+\usetikzlibrary{fill.image} % LaTeX (primary choice) and plain TeX
+\usetikzlibrary[fill.image] % ConTeXt
+\usepackage{tikzfill.image} % LaTeX (secondary choice)
 \end{dispListing*}
 
 This library defines options to fill graphs with images or arbitray pictures.
@@ -575,9 +573,9 @@ completely rewritten with |expl3|.
 \section{Hexagon Pattern Library}\label{sec:hexagon}%
 
 \begin{dispListing*}{title=\tikzname\ Library |fill.hexagon|}
-\usetikzlibrary{fill.hexagon} % LATEX (primary choice) and plain TEX
-\usetikzlibrary[fill.hexagon] % ConTEXt
-\usepackage{tikzfill.hexagon} % LATEX (secondary choice)
+\usetikzlibrary{fill.hexagon} % LaTeX (primary choice) and plain TeX
+\usetikzlibrary[fill.hexagon] % ConTeXt
+\usepackage{tikzfill.hexagon} % LaTeX (secondary choice)
 \end{dispListing*}
 
 Based on |patterns.meta|, this library defines new hexagon patterns to fill graphs.
@@ -1130,9 +1128,9 @@ Both bands together build a uniform combined pattern.
 \section{Rhombus Pattern Library}\label{sec:rhombus}%
 
 \begin{dispListing*}{title=\tikzname\ Library |fill.rhombus|}
-\usetikzlibrary{fill.rhombus} % LATEX (primary choice) and plain TEX
-\usetikzlibrary[fill.rhombus] % ConTEXt
-\usepackage{tikzfill.rhombus} % LATEX (secondary choice)
+\usetikzlibrary{fill.rhombus} % LaTeX (primary choice) and plain TeX
+\usetikzlibrary[fill.rhombus] % ConTeXt
+\usepackage{tikzfill.rhombus} % LaTeX (secondary choice)
 \end{dispListing*}
 
 Based on |patterns.meta|, this library defines new rhombus patterns to fill graphs.
