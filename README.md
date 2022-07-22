@@ -1,4 +1,4 @@
-# The LaTeX package tikzfill - version 1.0.0 (2022/07/20)
+# The LaTeX package tikzfill - version 1.0.1pre1 (2022/07/22)
 
 
 > Copyright (c) 2022-2022 by Prof. Dr. Dr. Thomas F. Sturm <thomas dot sturm at unibw dot de>
