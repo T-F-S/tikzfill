@@ -17,21 +17,18 @@ and this project adheres to
 
 
 
-## [1.0.1] - 2022-xx-xx
+## [1.0.1] - 2023-08-08
 
 ### Added
 - Input of `expl3-generic` where `ExplSyntaxOn` is not defined (issue #1)
-
-### Changed
-### Deprecated
 
 ### Removed
 - Library `fill.image`: Unused code fragments
 
 ### Fixed
 - Spelling of LaTeX etc. inside the documentation (issue #1)
-
-### Security
+- Package loading implementation changed to LaTeX2e by adapting a TikZ macro
+    to fix package loading problems (issue #2)
 
 
 

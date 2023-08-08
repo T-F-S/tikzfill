@@ -1,8 +1,8 @@
-%% The LaTeX package tikzfill - version 1.0.1pre1 (2022/07/22)
+%% The LaTeX package tikzfill - version 1.0.1 (2023/08/08)
 %% tikzfill-common.sty: auxiliary code for library loading
 %%
 %% -------------------------------------------------------------------------------------------
-%% Copyright (c) 2022-2022 by Prof. Dr. Dr. Thomas F. Sturm <thomas dot sturm at unibw dot de>
+%% Copyright (c) 2022-2023 by Prof. Dr. Dr. Thomas F. Sturm <thomas dot sturm at unibw dot de>
 %% -------------------------------------------------------------------------------------------
 %%
 %% This work may be distributed and/or modified under the
@@ -18,41 +18,38 @@
 %% This work consists of all files listed in README.md
 %%
 \NeedsTeXFormat{LaTeX2e}[2020/10/01]
-\ProvidesPackage{tikzfill-common}[2022/07/22 v1.0.1pre1 Auxiliary code for tikzfill]
+\ProvidesPackage{tikzfill-common}[2023/08/08 v1.0.1 Auxiliary code for tikzfill]
 \RequirePackage{tikz}
-\ifx\ExplSyntaxOn\undefined
-  \input expl3-generic\relax
-\fi
-\ExplSyntaxOn
 
-\cs_new_nopar:Npn \__tikzfill_usetikzlibrary:n #1
-  {
-    \cs_if_exist:NTF \tikzfillpkgprefix
-      {
-        \bool_set:Nn \l_tmpa_bool { \tl_if_blank_p:V \tikzfillpkgprefix }
-      }
-      {
-        \bool_set_true:N \l_tmpa_bool
-      }
-    \bool_if:NTF \l_tmpa_bool
-      {
-        \usetikzlibrary{ #1 }
-      }
-      {
-        \cs_if_exist:NF \l__tikzfill_library_seq
-        {
-          \seq_new:N \l__tikzfill_library_seq
-        }
-        \seq_set_from_clist:Nn \l__tikzfill_library_seq { #1 }
-        \seq_map_inline:Nn \l__tikzfill_library_seq
-          {
-            \cs_if_exist:cF { tikz@library@ ##1 @loaded }
-              {
-                \cs_gset:cpn { tikz@library@ ##1 @loaded }{}
-                \input{ \tikzfillpkgprefix tikzlibrary ##1 .code.tex}
-              }
-          }
-      }
-  }
-
-\ExplSyntaxOff
+% adapted copy of \use@@tikzlibrary from tikz.code.tex
+\def\tikzfill@use@@tikzlibrary#1{%
+  \edef\pgf@list{#1}%
+  \pgfutil@for\pgf@temp:=\pgf@list\do{%
+    \expandafter\pgfkeys@spdef\expandafter\pgf@temp\expandafter{\pgf@temp}%
+    \ifx\pgf@temp\pgfutil@empty
+    \else
+      \expandafter\ifx\csname tikz@library@\pgf@temp @loaded\endcsname\relax%
+      \expandafter\global\expandafter\let\csname tikz@library@\pgf@temp @loaded\endcsname=\pgfutil@empty%
+      \expandafter\edef\csname tikz@library@#1@atcode\endcsname{\the\catcode`\@}
+      \expandafter\edef\csname tikz@library@#1@barcode\endcsname{\the\catcode`\|}
+      \expandafter\edef\csname tikz@library@#1@dollarcode\endcsname{\the\catcode`\$}
+      \catcode`\@=11
+      \catcode`\|=12
+      \catcode`\$=3
+      \pgfutil@InputIfFileExists{\tikzfillpkgprefix tikzlibrary\pgf@temp.code.tex}{}{
+        \pgfutil@IfFileExists{\tikzfillpkgprefix pgflibrary\pgf@temp.code.tex}{%
+          \expandafter\usepgflibrary\expandafter{\pgf@temp}%
+        }{%
+          \tikzerror{I did not find the tikz library
+            '\pgf@temp'. I looked for files named
+            \tikzfillpkgprefix tikzlibrary\pgf@temp.code.tex and
+            \tikzfillpkgprefix pgflibrary\pgf@temp.code.tex, but neither
+            could be found in the current texmf trees.}
+        }}%
+      \catcode`\@=\csname tikz@library@#1@atcode\endcsname
+      \catcode`\|=\csname tikz@library@#1@barcode\endcsname
+      \catcode`\$=\csname tikz@library@#1@dollarcode\endcsname
+      \fi%
+    \fi%
+  }%
+}

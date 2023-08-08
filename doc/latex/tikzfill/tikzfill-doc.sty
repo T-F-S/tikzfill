@@ -1,9 +1,9 @@
 % !TeX encoding=UTF-8
-%% The LaTeX package tikzfill - version 1.0.1pre1 (2022/07/22)
+%% The LaTeX package tikzfill - version 1.0.1 (2023/08/08)
 %% tikzfill-doc.sty: style file for the documentation
 %%
 %% -------------------------------------------------------------------------------------------
-%% Copyright (c) 2022-2022 by Prof. Dr. Dr. Thomas F. Sturm <thomas dot sturm at unibw dot de>
+%% Copyright (c) 2022-2023 by Prof. Dr. Dr. Thomas F. Sturm <thomas dot sturm at unibw dot de>
 %% -------------------------------------------------------------------------------------------
 %%
 %% This work may be distributed and/or modified under the
@@ -18,10 +18,9 @@
 %%
 %% This work consists of all files listed in README.md
 %%
-\def\version{1.0.1pre1}%
-\def\datum{2022/07/22}%
+\def\version{1.0.1}%
+\def\datum{2023/08/08}%
 
-\def\tikzfillpkgprefix{}
 \IfFileExists{tikzfill-doc.cfg}{\input{tikzfill-doc.cfg}}{}
 
 \RequirePackage[T1]{fontenc}
@@ -32,7 +31,11 @@
 \RequirePackage[svgnames,table,hyperref]{xcolor}
 \RequirePackage{tikz,siunitx,xfp,tabularray}
 \usetikzlibrary{patterns,shadings,fadings}
-\RequirePackage{\tikzfillpkgprefix tikzfill}
+\ifdefined\tikzfillpkgprefix
+  \RequirePackage{\tikzfillpkgprefix tikzfill}
+\else
+  \RequirePackage{tikzfill}
+\fi
 \RequirePackage{varioref}
 \RequirePackage[pdftex,bookmarks,raiselinks,pageanchor,hyperindex,colorlinks]{hyperref}
 \urlstyle{sf}
