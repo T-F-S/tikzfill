@@ -1,10 +1,10 @@
 % \LaTeX-Main\
 % !TeX encoding=UTF-8
-%% The LaTeX package tikzfill - version 1.0.1 (2023/08/08)
+%% The LaTeX package tikzfill - version 1.1.0 (2026/03/26)
 %% tikzfill.tex: Manual
 %%
 %% -------------------------------------------------------------------------------------------
-%% Copyright (c) 2022-2023 by Prof. Dr. Dr. Thomas F. Sturm <thomas dot sturm at unibw dot de>
+%% Copyright (c) 2022-2026 by Prof. Dr. Dr. Thomas F. Sturm <thomas dot sturm at unibw dot de>
 %% -------------------------------------------------------------------------------------------
 %%
 %% This work may be distributed and/or modified under the
@@ -21,7 +21,7 @@
 %%
 % \RequirePackage[check-declarations,enable-debug]{expl3}
 \documentclass[a4paper,11pt]{article}
-\usepackage{tikzfill-doc}
+\usepackage{tikzfill.doc}
 
 \hypersetup{
   pdftitle={Manual for the tikzfill package},
@@ -35,35 +35,24 @@
 \begin{tcboutputlisting}
 % \documentclass[a4paper]{article}
 % \usepackage{tikzfill}
-% \usetikzlibrary{fadings,shadings}
 % \usepackage[skins,breakable]{tcolorbox}
-% \usepackage{ninecolors}
 % \begin{document}
 \begin{tcolorbox}[spread,blankest,phantom={\thispagestyle{empty}}]
-\begin{tikzfadingfrompicture}[name=titlepicture]
-  \path
-    [
-      pattern hexagon cycle = { size=28mm, rings=5 },
-      pattern color         = white,
-    ]
-    (-\tcbtextwidth/2,-\tcbtextheight/2) rectangle
-    (\tcbtextwidth/2,\tcbtextheight/2);
-\end{tikzfadingfrompicture}%
-%
 \begin{tikzpicture}
-  \fill
+\path
     [
-      upper left = blue5,    upper right = cyan5,
-      lower left = magenta5, lower right = blue5,
-    ]
-   (-\tcbtextwidth/2,-\tcbtextheight/2) rectangle
-   (\tcbtextwidth/2,\tcbtextheight/2);
-\shade
-    [
-      path fading = titlepicture,
-      fit fading  = false,
-      upper left = blue6,    upper right = cyan6,
-      lower left = magenta6, lower right = blue6,
+      preaction={fill=black},
+      fill gea Weihmichl =
+      {
+        scale fixed = 1,
+        xstep = 21mm,
+        ystep equidistance,
+        init-row< = \TFRowColorLet{mycolor}{red}{blue},
+        freeze-row,
+        style 1 = {fill=mycolor!50!white},
+        style 2 = {fill=mycolor},
+        style 3 = {fill=mycolor!50!black},
+      },
     ]
     (-\tcbtextwidth/2,-\tcbtextheight/2) rectangle
     (\tcbtextwidth/2,\tcbtextheight/2);
@@ -101,10 +90,14 @@
 \bigskip
 \begin{absquote}
   \begin{center}\bfseries Abstract\end{center}
-  |tikzfill| is a collection of \tikzname\ libraries which add further
-  options to fill \tikzname\ paths with images and patterns.
-  The libraries comprise fillings with images from files and from \tikzname\ pictures.
-  Also, patterns of hexagons and of rhombi are provided.
+  The |tikzfill| package is a collection of \tikzname\ libraries that provide
+  additional options for filling \tikzname\ paths with images and patterns. The
+  libraries support fillings based on external image files as well as \tikzname\
+  pictures. They also include patterns of hexagons and rhombi.
+
+  In addition, the package offers fillings composed of similar, though not
+  necessarily identical, small pictures arranged on a grid, providing greater
+  flexibility than usual \tikzname\ patterns.
 \end{absquote}
 
 \clearpage
@@ -138,6 +131,7 @@ the following \LaTeX\ style file
 \end{dispListing*}
 
 
+\begin{myvoid}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \clearpage
@@ -149,7 +143,7 @@ the following \LaTeX\ style file
 \usepackage{tikzfill.image} % LaTeX (secondary choice)
 \end{dispListing*}
 
-This library defines options to fill graphs with images or arbitray pictures.
+This library defines options to fill graphs with images or arbitrary pictures.
 
 Until |tcolorbox| version 5.1.1 (2022/06/24), the code of this library was part
 of |tcolorbox|. Now, on suggestion of
@@ -640,7 +634,7 @@ Both bands together build a uniform combined pattern.
 
 \clearpage
 
-\begin{docPatternKey}{size}{=\meta{size}}{no default, initially |8mm|}
+\begin{docPatternKey}[][doc label=size@hex]{size}{=\meta{size}}{no default, initially |8mm|}
   The given \meta{size} denotes the length of an edge of one hexagonical tile
   where the (possibly smaller) hexagon is located in.
 \begin{dispExample*}{sbs,lefthand ratio=0.66,right=2mm,sidebyside gap=5mm,center lower}
@@ -659,7 +653,7 @@ Both bands together build a uniform combined pattern.
 
 
 
-\begin{docPatternKey}{fill}{}{no value, initially set}
+\begin{docPatternKey}[][doc label=fill@hex]{fill}{}{no value, initially set}
   Sets the hexagons to be filled. |fill| and |draw| are mutually exclusionary.
 \begin{dispExample*}{sbs,lefthand ratio=0.66,right=2mm,sidebyside gap=5mm,center lower}
 \begin{tikzpicture}
@@ -676,7 +670,7 @@ Both bands together build a uniform combined pattern.
 \end{docPatternKey}
 
 
-\begin{docPatternKey}{draw}{}{no value, initially unset}
+\begin{docPatternKey}[][doc label=draw@hex]{draw}{}{no value, initially unset}
   Sets the hexagons to be outlined. |fill| and |draw| are mutually exclusionary.
 \begin{dispExample*}{sbs,lefthand ratio=0.66,right=2mm,sidebyside gap=5mm,center lower}
 \begin{tikzpicture}
@@ -693,7 +687,7 @@ Both bands together build a uniform combined pattern.
 \end{docPatternKey}
 
 
-\begin{docPatternKey}{line width}{=\meta{length}}{no default, initially |0.4pt|}
+\begin{docPatternKey}[][doc label=line width@hex]{line width}{=\meta{length}}{no default, initially |0.4pt|}
   Sets the \meta{length} value of the line width.
   This is only relevant, if the hexagons are not filled.
 \begin{dispExample*}{sbs,lefthand ratio=0.66,right=2mm,sidebyside gap=5mm,center lower}
@@ -717,12 +711,14 @@ Both bands together build a uniform combined pattern.
     {
       doc name        = xshift,
       doc parameter   = {=\meta{xshift}},
-      doc description = {no default, initially |0pt|}
+      doc description = {no default, initially |0pt|},
+      doc label       = xshift@hex
     },
     {
       doc name        = yshift,
       doc parameter   = {=\meta{yshift}},
-      doc description = {no default, initially |0pt|}
+      doc description = {no default, initially |0pt|},
+      doc label       = yshift@hex
     }
   }
   The pattern is shifted by \meta{xshift} and \meta{yshift}.
@@ -745,7 +741,7 @@ Both bands together build a uniform combined pattern.
 
 
 
-\begin{docPatternKey}{angle}{=\meta{angle}}{no default, initially |0|}
+\begin{docPatternKey}[][doc label=angle@hex]{angle}{=\meta{angle}}{no default, initially |0|}
   The pattern is rotated by the given \meta{angle}.
   \par
   Note that for \docValue*{hexagon} is valid, that a pattern is shifted first and rotated afterwards.
@@ -765,7 +761,7 @@ Both bands together build a uniform combined pattern.
 
 
 
-\begin{docPatternKey}{pos}{=\meta{value}}{no default, initially |0.8|}
+\begin{docPatternKey}[][doc label=pos@hex]{pos}{=\meta{value}}{no default, initially |0.8|}
   Sets the edge position with a \meta{value} between 0 and 1, where $0$ is
   the center and $1$ the outer rim of the hexagonical tile. $1$ is a less
   efficient way to either fill the whole graph or to draw a \docValue*{hexagon grid}.
@@ -791,7 +787,7 @@ Both bands together build a uniform combined pattern.
 \clearpage
 
 
-\begin{docPatternKey}{band}{=\meta{number}}{no default, initially |0|}
+\begin{docPatternKey}[][doc label=band@hex]{band}{=\meta{number}}{no default, initially |0|}
   \meta{number} can take 0 or 1 and denotes one of two different bands of the pattern.
 \begin{dispExample*}{sbs,lefthand ratio=0.66,right=2mm,sidebyside gap=5mm,center lower}
 \begin{tikzpicture}
@@ -850,7 +846,7 @@ a single pattern und more efficient than \docValue*{hexagon} with settings |draw
 
 
 
-\begin{docPatternKey}{size}{=\meta{size}}{no default, initially |8mm|}
+\begin{docPatternKey}[][doc label=size@hexgrid]{size}{=\meta{size}}{no default, initially |8mm|}
   The given \meta{size} denotes the length of an edge of one hexagon.
 \begin{dispExample*}{sbs,lefthand ratio=0.66,right=2mm,sidebyside gap=5mm,center lower}
 \begin{tikzpicture}
@@ -874,12 +870,14 @@ a single pattern und more efficient than \docValue*{hexagon} with settings |draw
     {
       doc name        = xshift,
       doc parameter   = {=\meta{xshift}},
-      doc description = {no default, initially |0pt|}
+      doc description = {no default, initially |0pt|},
+      doc label       = xshift@hexgrid
     },
     {
       doc name        = yshift,
       doc parameter   = {=\meta{yshift}},
-      doc description = {no default, initially |0pt|}
+      doc description = {no default, initially |0pt|},
+      doc label       = yshift@hexgrid
     }
   }
   The pattern is shifted by \meta{xshift} and \meta{yshift}.
@@ -901,7 +899,7 @@ a single pattern und more efficient than \docValue*{hexagon} with settings |draw
 \end{docPatternKeys}
 
 
-\begin{docPatternKey}{angle}{=\meta{angle}}{no default, initially |0|}
+\begin{docPatternKey}[][doc label=angle@hexgrid]{angle}{=\meta{angle}}{no default, initially |0|}
   The pattern is rotated by the given \meta{angle}.
   \par
   Note that for \docValue*{hexagon grid} is valid, that a pattern is shifted first and rotated afterwards.
@@ -921,7 +919,7 @@ a single pattern und more efficient than \docValue*{hexagon} with settings |draw
 
 
 
-\begin{docPatternKey}{line width}{=\meta{length}}{no default, initially |0.4pt|}
+\begin{docPatternKey}[][doc label=line width@hexgrid]{line width}{=\meta{length}}{no default, initially |0.4pt|}
   Sets the \meta{length} value of the line width.
 \begin{dispExample*}{sbs,lefthand ratio=0.66,right=2mm,sidebyside gap=5mm,center lower}
 \begin{tikzpicture}
@@ -997,7 +995,7 @@ Both bands together build a uniform combined pattern.
 
 \clearpage
 
-\begin{docPatternKey}{size}{=\meta{size}}{no default, initially |8mm|}
+\begin{docPatternKey}[][doc label=size@hexcycle]{size}{=\meta{size}}{no default, initially |8mm|}
   The given \meta{size} denotes the length of an edge of one hexagonical tile
   where the (smaller) hexagons are located in.
 \begin{dispExample*}{sbs,lefthand ratio=0.66,right=2mm,sidebyside gap=5mm,center lower}
@@ -1020,12 +1018,14 @@ Both bands together build a uniform combined pattern.
     {
       doc name        = xshift,
       doc parameter   = {=\meta{xshift}},
-      doc description = {no default, initially |0pt|}
+      doc description = {no default, initially |0pt|},
+      doc label       = xshift@hexcycle
     },
     {
       doc name        = yshift,
       doc parameter   = {=\meta{yshift}},
-      doc description = {no default, initially |0pt|}
+      doc description = {no default, initially |0pt|},
+      doc label       = yshift@hexcycle
     }
   }
   The pattern is shifted by \meta{xshift} and \meta{yshift}.
@@ -1047,7 +1047,7 @@ Both bands together build a uniform combined pattern.
 \end{docPatternKeys}
 
 
-\begin{docPatternKey}{angle}{=\meta{angle}}{no default, initially |0|}
+\begin{docPatternKey}[][doc label=angle@hexcycle]{angle}{=\meta{angle}}{no default, initially |0|}
   The pattern is rotated by the given \meta{angle}.
   \par
   Note that for \docValue*{hexagon cycle} is valid, that a pattern is shifted first and rotated afterwards.
@@ -1069,7 +1069,7 @@ Both bands together build a uniform combined pattern.
 \clearpage
 
 
-\begin{docPatternKey}{rings}{=\meta{number}}{no default, initially |3|}
+\begin{docPatternKey}[][doc label=rings@hexcycle]{rings}{=\meta{number}}{no default, initially |3|}
   Sets the \meta{number} of rings as $0, 1, 2, 3, \ldots$
 
 \begin{dispExample*}{sbs,lefthand ratio=0.66,right=2mm,sidebyside gap=5mm,center lower}
@@ -1087,7 +1087,7 @@ Both bands together build a uniform combined pattern.
 \end{docPatternKey}
 
 
-\begin{docPatternKey}{gap}{=\meta{value}}{no default, initially |1|}
+\begin{docPatternKey}[][doc label=gap@hexcycle]{gap}{=\meta{value}}{no default, initially |1|}
   Sets the gap between two rings as \meta{value} times the line width of a ring.
   \meta{value} has to be greater or equal $0.01$.
 
@@ -1106,7 +1106,7 @@ Both bands together build a uniform combined pattern.
 \end{docPatternKey}
 
 
-\begin{docPatternKey}{band}{=\meta{number}}{no default, initially |0|}
+\begin{docPatternKey}[][doc label=band@hexcycle]{band}{=\meta{number}}{no default, initially |0|}
   \meta{number} can take 0 or 1 and denotes one of two different bands of the pattern.
 \begin{dispExample*}{sbs,lefthand ratio=0.66,right=2mm,sidebyside gap=5mm,center lower}
 \begin{tikzpicture}
@@ -1174,7 +1174,7 @@ filled or outlined and can be arranged in different \emph{bands}, called band 0,
 \end{docTikzKey}
 
 
-\begin{docPatternKey}{size}{=\meta{size}}{no default, initially |10mm|}
+\begin{docPatternKey}[][doc label=size@rhombus]{size}{=\meta{size}}{no default, initially |10mm|}
   The given \meta{size} denotes the length of an edge of one rhombical tile
   where the (possibly smaller) rhombus is located in.
 
@@ -1194,7 +1194,7 @@ filled or outlined and can be arranged in different \emph{bands}, called band 0,
 
 \clearpage
 
-\begin{docPatternKey}{fill}{}{no value, initially set}
+\begin{docPatternKey}[][doc label=fill@rhombus]{fill}{}{no value, initially set}
   Sets the rhombi to be filled. |fill| and |draw| are mutually exclusionary.
 \begin{dispExample*}{sbs,lefthand ratio=0.66,right=2mm,sidebyside gap=5mm,center lower}
 \begin{tikzpicture}
@@ -1211,7 +1211,7 @@ filled or outlined and can be arranged in different \emph{bands}, called band 0,
 \end{docPatternKey}
 
 
-\begin{docPatternKey}{draw}{}{no value, initially unset}
+\begin{docPatternKey}[][doc label=draw@rhombus]{draw}{}{no value, initially unset}
   Sets the rhombi to be outlined. |fill| and |draw| are mutually exclusionary.
 \begin{dispExample*}{sbs,lefthand ratio=0.66,right=2mm,sidebyside gap=5mm,center lower}
 \begin{tikzpicture}
@@ -1228,7 +1228,7 @@ filled or outlined and can be arranged in different \emph{bands}, called band 0,
 \end{docPatternKey}
 
 
-\begin{docPatternKey}{line width}{=\meta{length}}{no default, initially |0.4pt|}
+\begin{docPatternKey}[][doc label=line width@rhombus]{line width}{=\meta{length}}{no default, initially |0.4pt|}
   Sets the \meta{length} value of the line width. This is only relevant, if
   the rhombi are not filled.
 
@@ -1247,7 +1247,7 @@ filled or outlined and can be arranged in different \emph{bands}, called band 0,
 \end{docPatternKey}
 
 
-\begin{docPatternKey}{angle}{=\meta{angle}}{no default, initially |-40|}
+\begin{docPatternKey}[][doc label=angle@rhombus]{angle}{=\meta{angle}}{no default, initially |-40|}
   The pattern is rotated by the given \meta{angle}.
   \par
   Note that for \docValue*{rhombus} is valid, that a pattern is rotated first and shifted afterwards.
@@ -1272,12 +1272,14 @@ filled or outlined and can be arranged in different \emph{bands}, called band 0,
     {
       doc name        = xshift,
       doc parameter   = {=\meta{xshift}},
-      doc description = {no default, initially |0pt|}
+      doc description = {no default, initially |0pt|},
+      doc label       = xshift@rhombus
     },
     {
       doc name        = yshift,
       doc parameter   = {=\meta{yshift}},
-      doc description = {no default, initially |0pt|}
+      doc description = {no default, initially |0pt|},
+      doc label       = yshift@rhombus
     }
   }
   The pattern is shifted by \meta{xshift} and \meta{yshift}.
@@ -1300,7 +1302,7 @@ filled or outlined and can be arranged in different \emph{bands}, called band 0,
 
 
 
-\begin{docPatternKey}{ratio}{=\meta{value}}{no default, initially |2|}
+\begin{docPatternKey}[][doc label=ratio@rhombus]{ratio}{=\meta{value}}{no default, initially |2|}
   Sets the \meta{value} of the ratio
   between the longer diagonal and the shorter diagonal.
   Therefore, $\text{\meta{value}}\ge 1$.
@@ -1321,7 +1323,7 @@ filled or outlined and can be arranged in different \emph{bands}, called band 0,
 
 
 
-\begin{docPatternKey}{pos}{=\meta{value}}{no default, initially |1|}
+\begin{docPatternKey}[][doc label=pos@rhombus]{pos}{=\meta{value}}{no default, initially |1|}
   Sets the edge position with a \meta{value} between 0 and 1, where $0$ is
   the center and $1$ the outer rim of the rhombical tile.
 
@@ -1347,10 +1349,10 @@ filled or outlined and can be arranged in different \emph{bands}, called band 0,
 \clearpage
 
 
-\begin{docPatternKey}{band}{=\meta{number}}{no default, initially |0|}
+\begin{docPatternKey}[][doc label=band@rhombus]{band}{=\meta{number}}{no default, initially |0|}
   \meta{number} can take 0, 1, or 2.
   Here, 0 and 1 denote one of two different bands of the pattern,
-  while 2 denotes the comination of both.
+  while 2 denotes the combination of both.
 \begin{dispExample*}{sbs,lefthand ratio=0.66,right=2mm,sidebyside gap=5mm,center lower}
 \begin{tikzpicture}
 \draw[
@@ -1376,8 +1378,1874 @@ filled or outlined and can be arranged in different \emph{bands}, called band 0,
 \end{dispExample*}
 \end{docPatternKey}
 
+
+\end{myvoid}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\section{Geometric Array Library}\label{sec:geomarray}%
+
+\begin{dispListing*}{title=\tikzname\ Library |fill.geomarray|}
+\usetikzlibrary{fill.geomarray} % LaTeX (primary choice) and plain TeX
+\usetikzlibrary[fill.geomarray] % ConTeXt
+\usepackage{tikzfill.geomarray} % LaTeX (secondary choice)
+\end{dispListing*}
+
+The fillings provided by this library consist of similar, though not necessarily
+identical, small pictures arranged on a grid. These pictures are conceptually
+similar to \tikzname\ pic objects and are referred to as \enquote{items} in the
+following. Unlike \tikzname\ tiling patterns, which are fixed in form, these
+pictures \emph{may} vary. Note that this flexibility comes at the cost of
+increased compilation time.
+
+Since \tikzname\ already uses terms such as grid and pattern, we refer to such a
+pattern-like grid of pic-like objects as a \enquote{geometric array} of
+\enquote{items}.
+
+Each geometric array consists of rows and columns of items arranged in either a
+rectangular or triangular grid. Built-in support is provided for scaling items
+from row to row, enabling fading-like effects.
+
+The most common use case is to employ a predefined template (see
+Section~\ref{sec:gea-templates}) and adjust its geometry and colors.
+
+\tcbset{gea-example/.style={sbs,lefthand ratio=0.66,right=2mm,sidebyside gap=5mm,center lower}}
+
+\begin{dispExample*}{gea-example}
+\begin{tikzpicture}
+\draw[ fill gea Weihmichl = {
+  scale fixed = 1,
+  ystep equidistance,
+  init-row< = \TFRowColorLet{mycolor}{red}{blue},
+  style 1 = {fill=mycolor!50!white},
+  style 2 = {fill=mycolor},
+  style 3 = {fill=mycolor!50!black},
+  freeze-row,
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+
+
+%-------------------------------------------------------------------------------
+\subsection{Base Settings}
+
+\begin{docTikzKeys}
+  {
+    {
+      doc name        = fill geomarray,
+      doc parameter   = {=\marg{options}},
+      doc description = {initially unset},
+      doc new         = 2026-03-18,
+    }
+  }
+  Applies a \tikzname\ |path picture| with geometric array settings
+  customized by varios \meta{options} to the current
+  path. Without additional settings, this produces a default filling. Templates
+  from Section~\ref{sec:gea-templates} apply \refKey{/tikz/fill geomarray}.\par
+  Note that the following keys are reset by this key:
+  \refKey{/tikz/geomarray/init},
+  \refKey{/tikz/geomarray/init-row},\\
+  \refKey{/tikz/geomarray/init-item}, and
+  \refKey{/tikz/geomarray/draw-item}.
+
+\begin{dispExample*}{gea-example}
+\begin{tikzpicture}
+\draw[ fill geomarray ]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docTikzKeys}
+
+
+\clearpage
+\begin{docGeaKeys}
+  {
+    {
+      doc name         = triangular,
+      doc key choices* = {true,false},
+      doc description  = {default \texttt{true}, initially \texttt{false}},
+      doc new          = 2026-03-18,
+    }
+  }
+  Geometric arrays can be either rectangular or triangular grids. Triangular
+  grids shift every second row by half of a horizontal step.
+
+\begin{dispExample*}{gea-example}
+\begin{tikzpicture}
+\draw[
+  fill geomarray = { triangular },
+]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docGeaKeys}
+
+
+\begin{docGeaKeys}
+  {
+    {
+      doc name        = xstep,
+      doc parameter   = {=\marg{length}},
+      doc description = {initially |10mm|},
+      doc new         = 2026-03-18,
+    }
+  }
+  Sets the horizontal step distance between two columns to \meta{length}.
+  This value can be used read-only as \docAuxCommand{l_tikzfill_gea_xstep_dim}
+  for item drawing.
+
+\begin{dispExample*}{gea-example}
+\begin{tikzpicture}
+\draw[
+  fill geomarray = { xstep = 7mm },
+]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docGeaKeys}
+
+
+\begin{docGeaKeys}
+  {
+    {
+      doc name        = ystep,
+      doc parameter   = {=\marg{length}},
+      doc description = {initially |10mm|},
+      doc new         = 2026-03-18,
+    }
+  }
+  Sets the vertical step distance between two rows to \meta{length}.
+  This value can be used read-only as \docAuxCommand{l_tikzfill_gea_ystep_dim}
+  for item drawing.
+
+\begin{dispExample*}{gea-example}
+\begin{tikzpicture}
+\draw[
+  fill geomarray = { ystep = 7mm },
+]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docGeaKeys}
+
+
+\clearpage
+\begin{docGeaKeys}
+  {
+    {
+      doc name        = step,
+      doc parameter   = {=\marg{length}},
+      doc description = {style},
+      doc new         = 2026-03-20,
+    }
+  }
+  Sets both \refKey{/tikz/geomarray/xstep} and \refKey{/tikz/geomarray/ystep}
+  to \meta{length}.
+
+\begin{dispExample*}{gea-example}
+\begin{tikzpicture}
+\draw[
+  fill geomarray = { step = 7mm },
+]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docGeaKeys}
+
+
+\begin{docGeaKeys}
+  {
+    {
+      doc name        = step half,
+      doc parameter   = {=\marg{length}},
+      doc description = {style},
+      doc new         = 2026-03-23,
+    }
+  }
+  Sets \refKey{/tikz/geomarray/xstep} to \meta{length} and \refKey{/tikz/geomarray/ystep}
+  to half of \meta{length}.
+
+\begin{dispExample*}{gea-example}
+\begin{tikzpicture}
+\draw[
+  fill geomarray = { step half = 10mm },
+]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docGeaKeys}
+
+
+\begin{docGeaKeys}
+  {
+    {
+      doc name        = step double,
+      doc parameter   = {=\marg{length}},
+      doc description = {style},
+      doc new         = 2026-03-23,
+    }
+  }
+  Sets \refKey{/tikz/geomarray/xstep} to \meta{length} and \refKey{/tikz/geomarray/ystep}
+  to double of \meta{length}.
+
+\begin{dispExample*}{gea-example}
+\begin{tikzpicture}
+\draw[
+  fill geomarray = { step double = 7mm },
+]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docGeaKeys}
+
+
+\clearpage
+\begin{docGeaKeys}
+  [
+      doc description = {style, no value},
+  ]
+  {
+    {
+      doc name        = ystep equidistance,
+      doc new         = 2026-03-18,
+    },
+    {
+      doc name        = ystep equidistance*,
+      doc new         = 2026-03-25,
+    }
+  }
+  For rectangular geometric arrays, this sets \refKey{/tikz/geomarray/ystep}
+  to \refKey{/tikz/geomarray/xstep}. For triangular geometric arrays,
+  \refKey{/tikz/geomarray/ystep} is set such that the centers of the items
+  become equidistant. Note that \refKey{/tikz/geomarray/triangular} has
+  to be set beforehand.\par
+  \refKey{/tikz/geomarray/ystep equidistance*} switches
+  rectangular and triangular computation.
+
+\begin{dispExample*}{gea-example}
+\begin{tikzpicture}
+\draw[
+  fill gea Furth = {
+    triangular,
+    xstep = 7mm,
+    ystep equidistance,
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docGeaKeys}
+
+
+\begin{docGeaKeys}
+  [
+      doc parameter   = {=\marg{length}},
+      doc description = {style},
+  ]
+  {
+    {
+      doc name        = step equi,
+      doc new         = 2026-03-20,
+    },
+    {
+      doc name        = step equi*,
+      doc new         = 2026-03-25,
+    }
+  }
+  Sets \refKey{/tikz/geomarray/xstep} to \meta{length}
+  and applies \refKey{/tikz/geomarray/ystep equidistance}
+  or \refKey{/tikz/geomarray/ystep equidistance*}, respectively.
+
+\begin{dispExample*}{gea-example}
+\begin{tikzpicture}
+\draw[
+  fill gea Bruckberg = { step equi = 7mm },
+]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docGeaKeys}
+
+
+\begin{docGeaKeys}
+  [
+      doc parameter   = {=\marg{length}},
+      doc description = {style},
+  ]
+  {
+    {
+      doc name        = step equi half,
+      doc new         = 2026-03-23,
+    },
+    {
+      doc name        = step equi* half,
+      doc new         = 2026-03-23,
+    }
+  }
+  Sets \refKey{/tikz/geomarray/xstep} to \meta{length}
+  and applies \refKey{/tikz/geomarray/ystep equidistance}
+  or \refKey{/tikz/geomarray/ystep equidistance*}, respectively,
+  but halve ystep.
+
+\begin{dispExample*}{gea-example}
+\begin{tikzpicture}
+\draw[
+  fill gea Bruckberg = { step equi half = 10mm },
+]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docGeaKeys}
+
+
+\clearpage
+\begin{docGeaKeys}
+  [
+      doc parameter   = {=\marg{length}},
+      doc description = {style},
+  ]
+  {
+    {
+      doc name        = step equi double,
+      doc new         = 2026-03-23,
+    },
+    {
+      doc name        = step equi* double,
+      doc new         = 2026-03-23,
+    }
+  }
+  Sets \refKey{/tikz/geomarray/xstep} to \meta{length}
+  and applies \refKey{/tikz/geomarray/ystep equidistance}
+  or \refKey{/tikz/geomarray/ystep equidistance*}, respectively,
+  but double ystep.
+
+\begin{dispExample*}{gea-example}
+\begin{tikzpicture}
+\draw[
+  fill gea Bruckberg = { step equi double = 7mm },
+]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docGeaKeys}
+
+
+\begin{docGeaKeys}
+  {
+    {
+      doc name        = angle,
+      doc parameter   = {=\marg{angle}},
+      doc description = {initially |0|},
+      doc new         = 2026-03-18,
+    }
+  }
+  Rotates the whole geometric array by \meta{angle}.
+
+\begin{dispExample*}{gea-example}
+\begin{tikzpicture}
+\draw[
+  fill geomarray = { angle = 20 },
+]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docGeaKeys}
+
+
+\clearpage
+\begin{docGeaKeys}
+  {
+    {
+      doc name        = scale,
+      doc parameter   = {=\marg{data points}},
+      doc description = {initially |0/0.9,1/0.9|},
+      doc new         = 2026-03-18,
+    }
+  }
+Defines a comma-separated list of interpolation \meta{data points} of type
+\emph{t}|/|\emph{scale}. The $t$ values must be strictly monotonically
+increasing from 0 to 1 (including both endpoints). They represent relative row
+positions.\par
+The \emph{scale} values are piecewise linearly interpolated and specify the actual scale
+of an item in a given row, where $1$ typically denotes full scale (though not
+necessarily).\par
+During item drawing, \docAuxCommand{l_tikzfill_gea_row_frac_fp} represents the
+current relative row position, while \docAuxCommand{l_tikzfill_gea_scale_fp}
+represents the interpolated scale value according to the specified interpolation
+\meta{data points}.
+
+\begin{dispExample*}{gea-example}
+\begin{tikzpicture}
+\draw[
+  fill geomarray = {
+    step equi = 5mm,
+    scale = {0/0.5,0.5/0.2,1/1},
+  },
+]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docGeaKeys}
+
+
+\begin{docGeaKeys}
+  {
+    {
+      doc name        = scale linear,
+      doc parameter   = {=\marg{scale0}\marg{scale1}},
+      doc description = {initially \texttt{\textbraceleft 0.9\textbraceright\textbraceleft 0.9\textbraceright}},
+      doc new         = 2026-03-23,
+    }
+  }
+  This is a shortcut for setting
+  \refKey{/tikz/geomarray/scale}|={0/|\meta{scale0}|,1/|\meta{scale1}|}|,
+  i.e. the scale changes linearly from \meta{scale0} to \meta{scale1}
+  from the first to the last row of the geometric array.
+\begin{dispExample*}{gea-example}
+\begin{tikzpicture}
+\draw[
+  fill geomarray = {
+    scale linear = {0.2}{0.9},
+  },
+]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docGeaKeys}
+
+
+
+\begin{docGeaKeys}
+  {
+    {
+      doc name        = scale fixed,
+      doc parameter   = {=\marg{scale}},
+      doc description = {initially |0.9|},
+      doc new         = 2026-03-18,
+    }
+  }
+  This is a shortcut for setting
+  \refKey{/tikz/geomarray/scale}|={0/|\meta{scale}|,1/|\meta{scale}|}|,
+  i.e. a fixed \meta{scale} is used for all rows of the geometric array.
+\begin{dispExample*}{gea-example}
+\begin{tikzpicture}
+\draw[
+  fill geomarray = { scale fixed = 0.5 },
+]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docGeaKeys}
+
+
+
+\clearpage
+%-------------------------------------------------------------------------------
+\subsection{Custom Creation of Geometric Arrays}
+
+The following pseudocode illustrates how a geometric array is constructed,
+including four hook positions for inserting custom code.
+
+\begin{dispListing*}{title=Pseudo code for geometric array creation}
+init                    % (1) initialize before looping
+                        %     Usable values:
+                        %     \l_tikzfill_gea_xstep_dim   \l_tikzfill_gea_ystep_dim
+                        %     \l_tikzfill_gea_cols_in     \l_tikzfill_gea_rows_int
+\loop_over_rows
+  {
+    init-row            % (2) initialize at begin of a row
+                        %     Usable values:
+                        %     \l_tikzfill_gea_row_tl
+                        %     \l_tikzfill_gea_row_frac_fp \l_tikzfill_gea_scale_fp
+    \loop_over_columns
+      {
+        init-item       % (3) initialize before drawing an item
+                        %     Usable values:
+                        %     \l_tikzfill_gea_col_tl
+        draw-item       % (4) item drawing code
+      }
+  }
+\end{dispListing*}
+
+Code can be inserted at these four positions using the following options:
+\begin{itemize}
+\item
+  The most important position is the last one, addressed by
+  \refKey{/tikz/geomarray/draw-item}. Here, the actual \tikzname\ drawing code for
+  the item must be provided.
+\item
+  The first three positions, addressed by
+  \refKey{/tikz/geomarray/init},\\
+  \refKey{/tikz/geomarray/init-row}, and \refKey{/tikz/geomarray/init-item},
+  may contain optional initialization code to prepare for subsequent drawing.
+  No \tikzname\ drawing code should be placed here; instead, these positions are
+  intended, for example, for calculations affecting the entire array or a single
+  row.
+\item
+  In addition to providing fully custom code, a practical and convenient approach
+  is to apply a template (see Section~\ref{sec:gea-templates}) and adjust only
+  selected settings at one of the four positions.
+\end{itemize}
+
+
+\begin{docGeaKeys}
+  [
+      doc parameter   = {=\marg{code}},
+  ]
+  {
+    {
+      doc name        = init,
+      doc description = {initially empty},
+      doc new         = 2026-03-18,
+    },
+    {
+      doc name        = init<,
+    },
+    {
+      doc name        = init>,
+    },
+  }
+  This code position is executed before the loop over rows begins. The following
+  read-only values are available: the grid step sizes
+  \docAuxCommand{l_tikzfill_gea_xstep_dim} and
+  \docAuxCommand{l_tikzfill_gea_ystep_dim}, as well as the number of columns and
+  rows given by \docAuxCommand{l_tikzfill_gea_cols_int} and
+  \docAuxCommand{l_tikzfill_gea_rows_int} (the actual counts are one greater,
+  since indexing starts at $0$).
+  \begin{itemize}
+  \item \refKey{/tikz/geomarray/init}  replaces the contents by \meta{code}.
+  \item \refKey{/tikz/geomarray/init<} appends \meta{code}.
+  \item \refKey{/tikz/geomarray/init>} prepends \meta{code}.
+  \end{itemize}
+\end{docGeaKeys}
+
+
+\clearpage
+\begin{docGeaKeys}
+  [
+      doc parameter   = {=\marg{code}},
+  ]
+  {
+    {
+      doc name        = init-row,
+      doc description = {initially empty},
+      doc new         = 2026-03-18,
+    },
+    {
+      doc name        = init-row<,
+    },
+    {
+      doc name        = init-row>,
+    },
+  }
+  This code position is inside the main loop over rows, at the beginning of row
+  \docAuxCommand{l_tikzfill_gea_row_tl}. Here,
+  \docAuxCommand{l_tikzfill_gea_row_frac_fp} denotes the relative row position as
+  a fractional value between $0$ and $1$. The macro
+  \docAuxCommand{l_tikzfill_gea_scale_fp} represents the current scale value for
+  the row, as defined by \refKey{/tikz/geomarray/scale}.
+  \begin{itemize}
+  \item \refKey{/tikz/geomarray/init-row}  replaces the contents by \meta{code}.
+  \item \refKey{/tikz/geomarray/init-row<} appends \meta{code}.
+  \item \refKey{/tikz/geomarray/init-row>} prepends \meta{code}.
+  \end{itemize}
+\end{docGeaKeys}
+
+
+\begin{docGeaKeys}
+  [
+      doc parameter   = {=\marg{code}},
+  ]
+  {
+    {
+      doc name        = init-item,
+      doc description = {initially empty},
+      doc new         = 2026-03-18,
+    },
+    {
+      doc name        = init-item<,
+    },
+    {
+      doc name        = init-item>,
+    },
+  }
+  This code position is inside the inner loop over columns, at the beginning of
+  column \docAuxCommand{l_tikzfill_gea_col_tl}. Here, final calculations or
+  settings may be applied before the current item is drawn.
+  \begin{itemize}
+  \item \refKey{/tikz/geomarray/init-item}  replaces the contents by \meta{code}.
+  \item \refKey{/tikz/geomarray/init-item<} appends \meta{code}.
+  \item \refKey{/tikz/geomarray/init-item>} prepends \meta{code}.
+  \end{itemize}
+\end{docGeaKeys}
+
+
+\begin{docKeys}
+  [
+      doc parameter   = {=\marg{code}},
+      doc keypath     = tikz/geomarray,
+  ]
+  {
+    {
+      doc name        = draw-item,
+      doc description = {initially special},
+      doc new         = 2026-03-18,
+    },
+    {
+      doc name        = draw-item<,
+    },
+    {
+      doc name        = draw-item>,
+    },
+  }
+  This code position contains the \tikzname\ drawing code for the current item.
+  All previously mentioned read-only values are available for use in drawing. The
+  center of the item corresponds to the \tikzname\ position $(0,0)$. The style
+  settings
+  \docAuxKey[tikz]{fill-gea-style-1} to
+  \docAuxKey[tikz]{fill-gea-style-9} may be used as drawing options.
+  \begin{itemize}
+  \item \refKey{/tikz/geomarray/draw-item}  replaces the contents by \meta{code}.
+  \item \refKey{/tikz/geomarray/draw-item<} appends \meta{code}.
+  \item \refKey{/tikz/geomarray/draw-item>} prepends \meta{code}.
+  \end{itemize}
+\end{docKeys}
+
+
+\begin{dispExample*}{gea-example}
+\ExplSyntaxOn
+\begin{tikzpicture}
+\draw[ fill~geomarray = {
+  scale~fixed = 1.3,
+  triangular,
+  ystep = 7mm,
+  init  = \sys_gset_rand_seed:n {1701},
+  init-item = { \TFDefineRandomColor{mycolor} },
+  draw-item = {
+    \path[fill=mycolor,draw=mycolor!50!black]
+    circle [
+      x~radius=\fp_to_dim:n {\l_tikzfill_gea_xstep_dim / 2
+                  * \l_tikzfill_gea_scale_fp },
+      y~radius=\fp_to_dim:n {\l_tikzfill_gea_ystep_dim / 2
+                  * \l_tikzfill_gea_scale_fp },
+    ];
+  },
+}]
+  (0,0) rectangle (4,6);
+\end{tikzpicture}
+\ExplSyntaxOff
+\end{dispExample*}
+
+
 \clearpage
 
+\begin{docGeaKeys}
+  [
+      doc parameter   = {=\marg{options}\marg{text}},
+  ]
+  {
+    {
+      doc name        = node,
+      doc new         = 2026-03-26,
+    },
+    {
+      doc name        = node<,
+    },
+    {
+      doc name        = node>,
+    },
+  }
+  This is a shortcut for drawing a \tikzname\ |node| applying
+  \refKey{/tikz/geomarray/draw-item},
+  \refKey{/tikz/geomarray/draw-item<}, or
+  \refKey{/tikz/geomarray/draw-item>}, respectively.
+  The node contents are set by \meta{text} and any \tikzname\ \meta{options}
+  for the node can be applied.
+\begin{dispExample*}{gea-example}
+\begin{tikzpicture}
+\draw[
+  fill geomarray =
+    {
+      node< = {white,draw=yellow,circle}{X}
+    },
+]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docGeaKeys}
+
+
+
+\begin{docGeaKeys}
+  [
+      doc parameter   = {=\marg{text}},
+  ]
+  {
+    {
+      doc name        = text,
+      doc new         = 2026-03-26,
+    },
+    {
+      doc name        = text<,
+    },
+    {
+      doc name        = text>,
+    },
+  }
+  This is a shortcut for setting \meta{text} with |\pgftext| applying
+  \refKey{/tikz/geomarray/draw-item},
+  \refKey{/tikz/geomarray/draw-item<}, or
+  \refKey{/tikz/geomarray/draw-item>}, respectively.
+  In contrast to \refKey{/tikz/geomarray/node}, there are no drawing options, but
+  \refKey{/tikz/geomarray/text} is much faster.
+\begin{dispExample*}{gea-example}
+% \usepackage{fontawesome7}
+\begin{tikzpicture}
+\draw[
+  preaction = {top color=yellow!20,bottom color=yellow},
+  fill geomarray =
+    {
+      triangular,
+      text = {\Huge\color{red}\faTriangleExclamation},
+      angle = 20,
+    },
+]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docGeaKeys}
+
+\clearpage
+
+\begin{docKeys}
+  [
+      doc parameter   = {=\marg{path style}},
+      doc keypath     = tikz/geomarray,
+  ]
+  {
+    {
+      doc name        = style 1,
+      doc description = {initially |fill=red|},
+      doc new         = 2026-03-18,
+    },
+    {
+      doc name        = style 2,
+      doc description = {initially |fill=green|},
+    },
+    {
+      doc name        = style 3,
+      doc description = {initially |fill=blue|},
+    },
+    {
+      doc name        = style 4,
+      doc description = {initially |fill=cyan|},
+    },
+    {
+      doc name        = style 5,
+      doc description = {initially |fill=magenta|},
+    },
+    {
+      doc name        = style 6,
+      doc description = {initially |fill=yellow|},
+    },
+    {
+      doc name        = style 7,
+      doc description = {initially |fill=lightgray|},
+    },
+    {
+      doc name        = style 8,
+      doc description = {initially |fill=orange|},
+    },
+    {
+      doc name        = style 9,
+      doc description = {initially |fill=purple|},
+    },
+  }
+  These convenience options generate styles named\\
+  \docAuxKey[tikz]{fill-gea-style-1}, \docAuxKey[tikz]{fill-gea-style-2},\\
+  \docAuxKey[tikz]{fill-gea-style-3}, \docAuxKey[tikz]{fill-gea-style-4},\\
+  \docAuxKey[tikz]{fill-gea-style-5}, \docAuxKey[tikz]{fill-gea-style-6},\\
+  \docAuxKey[tikz]{fill-gea-style-7}, \docAuxKey[tikz]{fill-gea-style-8},\\
+  and \docAuxKey[tikz]{fill-gea-style-9}.\\
+  Styles of this kind are used within templates (see
+  Section~\ref{sec:gea-templates}) for drawing. The style
+  \docAuxKey[tikz]{fill-gea-style-1} is also used in the default configuration.
+  Modifying these styles is the simplest way to customize the appearance.
+
+\begin{dispExample*}{gea-example}
+\begin{tikzpicture}
+\draw[ fill gea Bruckberg =
+  {
+    style 1 =
+      {
+        draw         = gray,
+        top color    = blue!50,
+        bottom color = red
+      },
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docKeys}
+
+
+\clearpage
+\begin{docGeaKeys}
+  {
+    {
+      doc name        = debug text,
+      doc parameter   = {\colOpt{=\meta{color}}},
+      doc description = {default |black|, initially |black|},
+      doc new         = 2026-03-18,
+    }
+  }
+  Prints the row and column numbers in the specified \meta{color}. Note that this
+  option appends drawing code; therefore, it should be specified after other
+  drawing settings. It is intended for debugging or for identifying a specific
+  item.\par
+  During item drawing, the following values are available (read-only):
+  \begin{itemize}
+  \item \docAuxCommand{l_tikzfill_gea_rows_int}: total number of rows minus one.
+  \item \docAuxCommand{l_tikzfill_gea_cols_int}: total number of columns minus one.
+  \item \docAuxCommand{l_tikzfill_gea_row_tl}: current row index, with\\
+  $0\le$\docAuxCommand{l_tikzfill_gea_row_tl}$\le$\docAuxCommand{l_tikzfill_gea_rows_int}.
+  \item \docAuxCommand{l_tikzfill_gea_col_tl}: current column index, with\\
+  $0\le$\docAuxCommand{l_tikzfill_gea_col_tl}$\le$\docAuxCommand{l_tikzfill_gea_cols_int}.
+  \end{itemize}
+  \refKey{/tikz/geomarray/debug text} displays the current pair consisting of
+  \docAuxCommand{l_tikzfill_gea_row_tl} and \docAuxCommand{l_tikzfill_gea_col_tl}.\par
+  Note that at least the first and last row or column may lie partially or entirely
+  outside the clipping area.
+\begin{dispExample*}{gea-example}
+\begin{tikzpicture}
+\draw[
+  fill geomarray = { debug text },
+]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docGeaKeys}
+
+
+\begin{docGeaKeys}
+  {
+    {
+      doc name        = freeze-row,
+      doc description = {experimental},
+      doc new         = 2026-03-18,
+    }
+  }
+This is an experimental compile-time optimization for geometric arrays in which
+each row contains uniform items. For each row, an item is drawn only once into a
+box (\enquote{frozen}), and this box is then copied to fill the row.\par
+Depending on the complexity of the graphical code, this can reduce compilation
+time. However, note the restriction that all items within a row must be uniform.
+\end{docGeaKeys}
+
+
+
+\clearpage
+%-------------------------------------------------------------------------------
+\subsection{Auxiliary Macros}
+
+\begin{docCommands}
+  {
+    {
+      doc name      = TFRowColorLet,
+      doc parameter = \marg{name}\marg{color1}\marg{color2},
+      doc new       = 2026-03-18,
+    }
+  }
+  Creates a new color with given \meta{name} which mixes the colors
+  \meta{color1} and \meta{color2}. On the first row, \meta{color1} is used,
+  on the last row \meta{color2}, and a linear mixture in between.
+
+\begin{dispExample*}{gea-example}
+\begin{tikzpicture}
+\draw[
+  fill gea Bruckberg = {
+    init-row< =
+      \TFRowColorLet{mycolor}{red}{blue!50!white},
+    style 1 = {draw=gray, fill=mycolor},
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docCommands}
+
+
+
+\begin{docCommands}
+  {
+    {
+      doc name      = TFRowColorLetSeq,
+      doc parameter = \marg{name}\marg{comma-list},
+      doc new       = 2026-03-18,
+    }
+  }
+  Creates a new color with given \meta{name} which mixes the colors
+  given by the \meta{comma-list} from the
+  first row (first color) to the last row (last color)
+  and a linear mixture in between.
+
+\begin{dispExample*}{gea-example}
+% \usepackage{opencolor}
+\begin{tikzpicture}
+\draw[
+  fill gea Essenbach = {
+    init-row< = \TFRowColorLetSeq{mycolor}
+      {oc-red-6,oc-blue-6,oc-green-6,oc-yellow-6},
+    style 1   = {fill=mycolor},
+    step equi = 5mm,
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docCommands}
+
+
+\begin{docCommands}
+  {
+    {
+      doc name      = TFDefineRandomColor,
+      doc parameter = \marg{name},
+      doc new       = 2026-03-18,
+    }
+  }
+  Defines a random color with given \meta{name}. Random numbers are taken
+  from the L3 programming layer.
+\begin{dispExample*}{gea-example}
+\ExplSyntaxOn
+\sys_gset_rand_seed:n {1701}
+\ExplSyntaxOff
+\begin{tikzpicture}
+\draw[
+  fill gea Furth = {
+    triangular,
+    step equi  = 8mm,
+    init-item< = \TFDefineRandomColor{mycolor},
+    style 1    = {ball color=mycolor},
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docCommands}
+
+
+\clearpage
+%-------------------------------------------------------------------------------
+\subsection{Templates}\label{sec:gea-templates}
+
+
+\begin{docTikzKeys}
+  {
+    {
+      doc name        = fill gea Altdorf,
+      doc parameter   = {=\marg{options}},
+      doc description = {initially unset},
+      doc new         = 2026-03-18,
+    }
+  }
+  The basic item shape of this template is a rectangle.
+  \refKey{/tikz/geomarray/style 1} is used for graph drawing.
+
+\begin{dispExample*}{gea-example}
+\begin{tikzpicture}
+\draw[
+  fill gea Altdorf = {
+    init-row< =
+      \TFRowColorLet{mycolor}{red}{blue},
+    style 1 =
+      {draw=gray, fill=mycolor},
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docTikzKeys}
+
+
+
+
+\begin{docTikzKeys}
+  {
+    {
+      doc name        = fill gea Loeschenbrand,
+      doc parameter   = {=\marg{options}},
+      doc description = {initially unset},
+      doc new         = 2026-03-20,
+    }
+  }
+  This is a variation of \refKey{/tikz/fill gea Altdorf} where
+  \refKey{/tikz/geomarray/style 1} and
+  \refKey{/tikz/geomarray/style 2} are used in a checkerboard pattern.
+
+\begin{dispExample*}{gea-example}
+\begin{tikzpicture}
+\draw[
+  fill gea Loeschenbrand = {
+    scale fixed = 1,
+    style 1 =
+      {bottom color=black, top color=black!50},
+    style 2 =
+      {bottom color=black!10, top color=white},
+    angle = -10,
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docTikzKeys}
+
+
+\begin{docTikzKeys}
+  {
+    {
+      doc name        = fill gea Ganslberg,
+      doc parameter   = {=\marg{options}},
+      doc description = {initially unset},
+      doc new         = 2026-03-18,
+    }
+  }
+  This is a variation of \refKey{/tikz/fill gea Altdorf} in which
+  \refKey{/tikz/geomarray/style 1} and \refKey{/tikz/geomarray/style 2} are used for
+  odd and even rows, respectively.
+
+\begin{dispExample*}{gea-example}
+\begin{tikzpicture}
+\draw[
+  fill gea Ganslberg = {
+    style 1 =
+      {bottom color=red, top color=red!50},
+    style 2 =
+      {bottom color=blue, top color=blue!50},
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docTikzKeys}
+
+\clearpage
+
+\begin{docTikzKeys}
+  {
+    {
+      doc name        = fill gea Essenbach,
+      doc parameter   = {=\marg{options}},
+      doc description = {initially unset},
+      doc new         = 2026-03-18,
+    }
+  }
+  The basic item shape of this template is a rhombus.
+  \refKey{/tikz/geomarray/style 1} is used for graph drawing.
+
+\begin{dispExample*}{gea-example}
+\begin{tikzpicture}
+\draw[
+  fill gea Essenbach = {
+    init-row< =
+      \TFRowColorLet{mycolor}{red}{blue},
+    style 1 =
+      {draw=gray, fill=mycolor},
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docTikzKeys}
+
+
+\begin{docTikzKeys}
+  {
+    {
+      doc name        = fill gea Mirskofen,
+      doc parameter   = {=\marg{options}},
+      doc description = {initially unset},
+      doc new         = 2026-03-18,
+    }
+  }
+  This is a variation of \refKey{/tikz/fill gea Essenbach} in which
+  \refKey{/tikz/geomarray/style 1} and \refKey{/tikz/geomarray/style 2} are used for
+  odd and even rows, respectively.
+
+\begin{dispExample*}{gea-example}
+\begin{tikzpicture}
+\draw[
+  fill gea Mirskofen = {
+    scale fixed = 1,
+    step equi = 5mm,
+    init-row< =
+      \TFRowColorLet{mycolor}{blue!60}{blue!30},
+    style 1 = {fill=mycolor},
+    style 2 = {},
+    angle = 45,
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docTikzKeys}
+
+
+\clearpage
+\begin{docTikzKeys}
+  {
+    {
+      doc name        = fill gea Pfettrach,
+      doc parameter   = {=\marg{options}},
+      doc description = {initially unset},
+      doc new         = 2026-03-18,
+    }
+  }
+  The basic item shape of this template is a rhombus divided into two parts.
+  \refKey{/tikz/geomarray/style 1} and
+  \refKey{/tikz/geomarray/style 2} are used for the two parts.
+
+\begin{dispExample*}{gea-example}
+\begin{tikzpicture}
+\draw[
+  fill gea Pfettrach = {
+    step half = 10mm,
+    style 1 = { fill = red!40 },
+    style 2 = { fill = red },
+    freeze-row,
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\begin{dispExample*}{gea-example}
+\ExplSyntaxOn
+\sys_gset_rand_seed:n {1701}
+\ExplSyntaxOff
+\begin{tikzpicture}
+\draw[
+  fill gea Pfettrach = {
+    scale fixed = 1,
+    step equi = 7mm,
+    init-item< = \TFDefineRandomColor{col1}%
+      \TFDefineRandomColor{col2},
+    style 1 = { fill = col1 },
+    style 2 = { fill = col2 },
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docTikzKeys}
+
+
+\begin{docTikzKeys}
+  {
+    {
+      doc name        = fill gea Kolmhub,
+      doc parameter   = {=\marg{options}},
+      doc description = {initially unset},
+      doc new         = 2026-03-18,
+    }
+  }
+  This is a variation of \refKey{/tikz/fill gea Pfettrach} in which
+  \refKey{/tikz/geomarray/style 1},
+  \refKey{/tikz/geomarray/style 2},
+  \refKey{/tikz/geomarray/style 3}, and
+  \refKey{/tikz/geomarray/style 4},
+  are used for
+  odd and even rows, respectively.
+
+\begin{dispExample*}{gea-example}
+\begin{tikzpicture}
+\draw[
+  fill gea Kolmhub = {
+    step = 6mm,
+    style 1 = { fill = red!40 },
+    style 2 = { fill = red },
+    style 3 = { fill = blue!40 },
+    style 4 = { fill = blue },
+    freeze-row,
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docTikzKeys}
+
+
+\clearpage
+\begin{docTikzKeys}
+  {
+    {
+      doc name        = fill gea Bruckberg,
+      doc parameter   = {=\marg{options}},
+      doc description = {initially unset},
+      doc new         = 2026-03-18,
+    }
+  }
+  The basic item shape of this template is a hexagon.
+  \refKey{/tikz/geomarray/style 1} is used for graph drawing.
+
+\begin{dispExample*}{gea-example}
+% \usepackage{opencolor}
+\begin{tikzpicture}
+\draw[
+  preaction = {fill=oc-orange-7},
+  fill gea Bruckberg = {
+    scale fixed = 0.97,
+    step equi = 7mm,
+    style 1 = {
+      top color    = oc-yellow-6,
+      bottom color = oc-orange-5  },
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\begin{dispExample*}{gea-example}
+% \usepackage{opencolor}
+% \usepackage{fontawesome7}
+\ExplSyntaxOn
+\begin{tikzpicture}
+\draw[
+  preaction = {fill=oc-orange-7},
+  fill~gea~Bruckberg = {
+    scale~fixed = 1,
+    step~equi = 7mm,
+    init< = \sys_gset_rand_seed:n {101},
+    init-item< = \tl_set:Ne \l_tmpa_tl
+      {oc-\clist_rand_item:n {red,grape,indigo,cyan,
+        green,yellow} },
+    style~1 = {draw=\l_tmpa_tl-4,fill=\l_tmpa_tl-3},
+    text< = {
+        \color{\l_tmpa_tl-6}\large
+        \faIcon{face-\clist_rand_item:n {smile,frown,
+          grin-beam,meh,tired,laugh,smile-wink}}
+      },
+}]
+  (0,0) rectangle (4,8);
+\end{tikzpicture}
+\ExplSyntaxOff
+\end{dispExample*}
+\end{docTikzKeys}
+
+\clearpage
+\begin{docTikzKeys}
+  {
+    {
+      doc name        = fill gea Bachhorn,
+      doc parameter   = {=\marg{options}},
+      doc description = {initially unset},
+      doc new         = 2026-03-18,
+    }
+  }
+  This is a variation of \refKey{/tikz/fill gea Bruckberg} in which
+  \refKey{/tikz/geomarray/style 1} and \refKey{/tikz/geomarray/style 2} are used for
+  odd and even rows, respectively.
+
+\begin{dispExample*}{gea-example}
+\begin{tikzpicture}
+\draw[
+  preaction = {top color=red!25,bottom color=blue!25},
+  fill gea Bachhorn = {
+    scale = {0/0.3,1/0.9},
+    step equi = 7mm,
+    style 1 = { draw=gray, fill=red },
+    style 2 = { draw=gray, fill=blue },
+    angle = 60,
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docTikzKeys}
+
+
+\begin{docTikzKeys}
+  {
+    {
+      doc name        = fill gea Weihmichl,
+      doc parameter   = {=\marg{options}},
+      doc description = {initially unset},
+      doc new         = 2026-03-18,
+    }
+  }
+  The basic item shape of this template is a hexagon divided into three parts.
+  \refKey{/tikz/geomarray/style 1},
+  \refKey{/tikz/geomarray/style 2}, and
+  \refKey{/tikz/geomarray/style 3}, are used for the three parts.
+
+
+\begin{dispExample*}{gea-example}
+% \usepackage{opencolor}
+\begin{tikzpicture}
+\draw[
+  fill gea Weihmichl = {
+    scale fixed = 1,
+    step equi = 8mm,
+    init-row< = \TFRowColorLetSeq{mycolor}{
+      oc-blue-6,oc-yellow-6,oc-red-6},
+    style 1 = {fill=mycolor!50!white},
+    style 2 = {fill=mycolor},
+    style 3 = {fill=mycolor!50!black},
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docTikzKeys}
+
+
+
+\clearpage
+\begin{docTikzKeys}
+  {
+    {
+      doc name        = fill gea Furth,
+      doc parameter   = {=\marg{options}},
+      doc description = {initially unset},
+      doc new         = 2026-03-18,
+    }
+  }
+  The basic item shape of this template is a circle.
+  \refKey{/tikz/geomarray/style 1} is used for graph drawing.
+
+\begin{dispExample*}{gea-example}
+\begin{tikzpicture}
+\draw[
+  preaction = {fill=blue!25},
+  fill gea Furth = {
+    triangular,
+    step equi = 4mm,
+    scale = {0/0,1/1.2},
+    style 1 = { fill=blue },
+    freeze-row,
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docTikzKeys}
+
+
+
+\begin{docTikzKeys}
+  {
+    {
+      doc name        = fill gea Schatzhofen,
+      doc parameter   = {=\marg{options}},
+      doc description = {initially unset},
+      doc new         = 2026-03-18,
+    }
+  }
+  This is a variation of \refKey{/tikz/fill gea Furth} in which
+  \refKey{/tikz/geomarray/style 1} and \refKey{/tikz/geomarray/style 2} are used for
+  odd and even rows, respectively.
+
+\begin{dispExample*}{gea-example}
+% \usepackage{opencolor}
+\begin{tikzpicture}
+\draw[
+  fill gea Schatzhofen = {
+    triangular,
+    scale fixed=1.2,
+    step equi = 6mm,
+    style 1 = { top color=oc-blue-3,
+      bottom color=oc-blue-9},
+    style 2 = { top color=oc-teal-3,
+      bottom color=oc-teal-9},
+    freeze-row,
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docTikzKeys}
+
+
+
+\clearpage
+\begin{docTikzKeys}
+  {
+    {
+      doc name        = fill gea Ergolding,
+      doc parameter   = {=\marg{options}},
+      doc description = {initially unset},
+      doc new         = 2026-03-24,
+    }
+  }
+  The basic item shape of this template is a tripod.
+  \refKey{/tikz/geomarray/style 1} is used for graph drawing.
+
+\begin{dispExample*}{gea-example}
+% \usepackage{opencolor}
+\begin{tikzpicture}
+\draw[
+  fill gea Ergolding = {
+    step equi = 8mm,
+    init-row< = \TFRowColorLetSeq{mycolor}{
+      oc-blue-6,oc-yellow-6,oc-red-6},
+    style 1 = {draw,fill=mycolor!50!white},
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docTikzKeys}
+
+
+\begin{docTikzKeys}
+  {
+    {
+      doc name        = fill gea Hascherkeller,
+      doc parameter   = {=\marg{options}},
+      doc description = {initially unset},
+      doc new         = 2026-03-24,
+    }
+  }
+  The basic item shape of this template is a tripod divided into three parts.
+  \refKey{/tikz/geomarray/style 1},
+  \refKey{/tikz/geomarray/style 2}, and
+  \refKey{/tikz/geomarray/style 3}, are used for the three parts.
+
+
+\begin{dispExample*}{gea-example}
+\ExplSyntaxOn
+\sys_gset_rand_seed:n {42}
+\ExplSyntaxOff
+\begin{tikzpicture}
+\draw[
+  fill gea Hascherkeller = {
+    scale fixed = 1,
+    step equi = 8mm,
+    init-item< = \TFDefineRandomColor{mycolor},
+    style 1 = {fill=mycolor!50!white},
+    style 2 = {fill=mycolor},
+    style 3 = {fill=mycolor!50!black},
+    angle=30,
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docTikzKeys}
+
+
+
+\clearpage
+\begin{docTikzKeys}
+  {
+    {
+      doc name        = fill gea Unterglaim,
+      doc parameter   = {=\marg{options}},
+      doc description = {initially unset},
+      doc new         = 2026-03-24,
+    }
+  }
+  The basic item shape of this template is an octogon.
+  \refKey{/tikz/geomarray/style 1} is used for graph drawing.
+
+\begin{dispExample*}{gea-example}
+\begin{tikzpicture}
+\draw[
+  preaction = {fill=yellow!70!gray},
+  fill gea Unterglaim = {
+    scale fixed = 1,
+    style 1 =
+      {draw, top color=blue!50,bottom color=blue},
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docTikzKeys}
+
+
+
+\begin{docTikzKeys}
+  {
+    {
+      doc name        = fill gea Grandsberg,
+      doc parameter   = {=\marg{options}},
+      doc description = {initially unset},
+      doc new         = 2026-03-20,
+    }
+  }
+  This is a variation of \refKey{/tikz/fill gea Unterglaim} where
+  \refKey{/tikz/geomarray/style 1} and
+  \refKey{/tikz/geomarray/style 2} are used in a checkerboard pattern.
+
+\begin{dispExample*}{gea-example}
+\begin{tikzpicture}
+\draw[
+  preaction = {fill=black!90},
+  fill gea Grandsberg = {
+    scale fixed = 1,
+    step = 5mm,
+    init-row< =
+      \TFRowColorLet{mycolor}{red!60}{blue!30},
+    style 1 = {draw=black!90,fill=mycolor},
+    style 2 = {fill=yellow!75!gray},
+    angle   = 45,
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docTikzKeys}
+
+
+\begin{docTikzKeys}
+  {
+    {
+      doc name        = fill gea Kottingrohr,
+      doc parameter   = {=\marg{options}},
+      doc description = {initially unset},
+      doc new         = 2026-03-18,
+    }
+  }
+  This is a variation of \refKey{/tikz/fill gea Unterglaim} in which
+  \refKey{/tikz/geomarray/style 1} and \refKey{/tikz/geomarray/style 2} are used for
+  odd and even rows, respectively.
+
+\begin{dispExample*}{gea-example}
+\begin{tikzpicture}
+\draw[
+  fill gea Kottingrohr = {
+    triangular,
+    scale linear = {0.5}{1},
+    step = 6mm,
+    style 1 = {bottom color=red, top color=red!50},
+    style 2 = {bottom color=blue, top color=blue!50},
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docTikzKeys}
+
+
+\clearpage
+\begin{docTikzKeys}
+  {
+    {
+      doc name        = fill gea Hohenthann,
+      doc parameter   = {=\marg{options}},
+      doc description = {initially unset},
+      doc new         = 2026-03-25,
+    }
+  }
+  The basic item shape of this template is an arrow.
+  \refKey{/tikz/geomarray/style 1} is used for graph drawing.
+
+\begin{dispExample*}{gea-example}
+\begin{tikzpicture}
+\draw[
+  fill gea Hohenthann = {
+    scale fixed = 1,
+    step equi* double = 7mm,
+    style 1 = {draw=white,
+      left color=blue!50,right color=blue},
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docTikzKeys}
+
+
+\begin{docTikzKeys}
+  {
+    {
+      doc name        = fill gea Bibelsbach,
+      doc parameter   = {=\marg{options}},
+      doc description = {initially unset},
+      doc new         = 2026-03-25,
+    }
+  }
+  This is a variation of \refKey{/tikz/fill gea Hohenthann} in which
+  \refKey{/tikz/geomarray/style 1} and \refKey{/tikz/geomarray/style 2} are used for
+  odd and even rows, respectively.
+
+\begin{dispExample*}{gea-example}
+\begin{tikzpicture}
+\draw[
+  fill gea Bibelsbach = {
+    scale fixed = 1,
+    step equi* double = 7mm,
+    style 1 = {draw=white,
+      left color=blue!50,right color=blue},
+    style 2 = {draw=white,
+      left color=red!50,right color=red},
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docTikzKeys}
+
+
+
+\begin{docTikzKeys}
+  {
+    {
+      doc name        = fill gea Roseneck,
+      doc parameter   = {=\marg{options}},
+      doc description = {initially unset},
+      doc new         = 2026-03-25,
+    }
+  }
+  This is a variation of \refKey{/tikz/fill gea Hohenthann} in which
+  \refKey{/tikz/geomarray/style 1} and \refKey{/tikz/geomarray/style 2} are used for
+  odd and even columns, respectively.
+
+\begin{dispExample*}{gea-example}
+\begin{tikzpicture}
+\draw[
+  fill gea Roseneck = {
+    scale fixed = 1,
+    step equi* double = 7mm,
+    style 1 = {draw=white,
+      left color=blue!50,right color=blue},
+    style 2 = {draw=white,
+      left color=red!50,right color=red},
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docTikzKeys}
+
+
+\clearpage
+\begin{docTikzKeys}
+  {
+    {
+      doc name        = fill gea Altenkofen,
+      doc parameter   = {=\marg{options}},
+      doc description = {initially unset},
+      doc new         = 2026-03-25,
+    }
+  }
+  This is a variation of \refKey{/tikz/fill gea Hohenthann} in which
+  \refKey{/tikz/geomarray/style 1} and \refKey{/tikz/geomarray/style 2}
+  are used are used in a checkerboard pattern.
+\begin{dispExample*}{gea-example}
+\begin{tikzpicture}
+\draw[
+  fill gea Altenkofen = {
+    scale fixed = 1,
+    step equi* double = 7mm,
+    style 1 = {draw=white,
+      left color=blue!50,right color=blue},
+    style 2 = {draw=white,
+      left color=red!50,right color=red},
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docTikzKeys}
+
+
+\begin{docTikzKeys}
+  {
+    {
+      doc name        = fill gea Irlmuehle,
+      doc parameter   = {=\marg{options}},
+      doc description = {initially unset},
+      doc new         = 2026-03-25,
+    }
+  }
+  This is a variation of \refKey{/tikz/fill gea Hohenthann} in which
+  \refKey{/tikz/geomarray/style 1},
+  \refKey{/tikz/geomarray/style 2},
+  \refKey{/tikz/geomarray/style 3}, and
+  \refKey{/tikz/geomarray/style 4}
+  are used are used.
+\begin{dispExample*}{gea-example}
+\begin{tikzpicture}
+\draw[
+  fill gea Irlmuehle = {
+    scale fixed = 1,
+    step equi* double = 7mm,
+    style 1 = {fill=red},
+    style 2 = {fill=red!50},
+    style 3 = {fill=blue},
+    style 4 = {fill=blue!50},
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docTikzKeys}
+
+
+\clearpage
+\begin{docTikzKeys}
+  {
+    {
+      doc name        = fill gea Gammelsdorf,
+      doc parameter   = {=\marg{options}},
+      doc description = {initially unset},
+      doc new         = 2026-03-25,
+    }
+  }
+  The basic item shape of this template is an arrow divided into two parts.
+  \refKey{/tikz/geomarray/style 1} and
+  \refKey{/tikz/geomarray/style 2} are used for the two parts.
+\begin{dispExample*}{gea-example}
+% \usepackage{opencolor}
+\begin{tikzpicture}
+\draw[
+  preaction = {fill=oc-teal-9},
+  fill gea Gammelsdorf = {
+    step equi* double = 6mm,
+    init-row< =
+      \TFRowColorLet{mycolor}{oc-cyan-6}{oc-green-6},
+    style 1 = {fill=mycolor},
+    style 2 = {fill=mycolor!50},
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docTikzKeys}
+
+
+\begin{docTikzKeys}
+  {
+    {
+      doc name        = fill gea Traich,
+      doc parameter   = {=\marg{options}},
+      doc description = {initially unset},
+      doc new         = 2026-03-25,
+    }
+  }
+  This is a variation of \refKey{/tikz/fill gea Gammelsdorf} in which
+  \refKey{/tikz/geomarray/style 1} and \refKey{/tikz/geomarray/style 2}
+  are used in a checkerboard pattern.
+\begin{dispExample*}{gea-example}
+% \usepackage{opencolor}
+\begin{tikzpicture}
+\draw[
+  fill gea Traich = {
+    scale fixed = 1,
+    step equi* = 7mm,
+    init-row< =
+      \TFRowColorLet{mycolor}{oc-cyan-6}{oc-green-6},
+    style 1 = {fill=mycolor},
+    style 2 = {fill=mycolor!50},
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docTikzKeys}
+
+
+
+\begin{docTikzKeys}
+  {
+    {
+      doc name        = fill gea Winbuerg,
+      doc parameter   = {=\marg{options}},
+      doc description = {initially unset},
+      doc new         = 2026-03-25,
+    }
+  }
+  This is a variation of \refKey{/tikz/fill gea Gammelsdorf} in which
+  \refKey{/tikz/geomarray/style 1},
+  \refKey{/tikz/geomarray/style 2},
+  \refKey{/tikz/geomarray/style 3}, and
+  \refKey{/tikz/geomarray/style 4} are used.
+\begin{dispExample*}{gea-example}
+% \usepackage{opencolor}
+\begin{tikzpicture}
+\draw[
+  fill gea Winbuerg = {
+    scale fixed = 1,
+    step equi* double = 7mm,
+    init-row< =
+      \TFRowColorLet{mycolA}{oc-cyan-6}{oc-green-6}%
+      \TFRowColorLet{mycolB}{oc-blue-6}{oc-violet-6},
+    style 1 = {fill=mycolA},
+    style 2 = {fill=mycolA!50},
+    style 3 = {fill=mycolB!50},
+    style 4 = {fill=mycolB},
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docTikzKeys}
+
+
+\clearpage
+\begin{docTikzKeys}
+  {
+    {
+      doc name        = fill gea Kreuzholzen,
+      doc parameter   = {=\marg{options}},
+      doc description = {initially unset},
+      doc new         = 2026-03-25,
+    }
+  }
+  This is a variation of \refKey{/tikz/fill gea Gammelsdorf} in which
+  \refKey{/tikz/geomarray/style 1} up to
+  \refKey{/tikz/geomarray/style 8} are used.
+\begin{dispExample*}{gea-example}
+% \usepackage{opencolor}
+\begin{tikzpicture}
+\draw[
+  fill gea Kreuzholzen = {
+    scale fixed = 1,
+    step equi* double = 6mm,
+    style 1 = {fill=oc-green-6},
+    style 2 = {fill=oc-green-2},
+    style 3 = {fill=oc-lime-2},
+    style 4 = {fill=oc-lime-6},
+    style 5 = {fill=oc-orange-9},
+    style 6 = {fill=oc-orange-6},
+    style 7 = {fill=oc-red-6},
+    style 8 = {fill=oc-red-9},
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docTikzKeys}
+
+
+\begin{docTikzKeys}
+  {
+    {
+      doc name        = fill gea Grafenhaun,
+      doc parameter   = {=\marg{options}},
+      doc description = {initially unset},
+      doc new         = 2026-03-25,
+    }
+  }
+  The basic item shape of this template is a hexagon divided into four
+  pentagons (or two pentagons and two tetragons).
+  \refKey{/tikz/geomarray/style 1},
+  \refKey{/tikz/geomarray/style 2},
+  \refKey{/tikz/geomarray/style 3}, and
+  \refKey{/tikz/geomarray/style 4}
+  are used for the four parts.\par
+  The optimal congruence of the parts is found with
+  \refKey{/tikz/geomarray/step equi* half}, but other relations between
+  xstep and ystep also produce pleasing results.
+
+\begin{dispExample*}{gea-example}
+% \usepackage{opencolor}
+\begin{tikzpicture}
+\draw[
+  fill gea Grafenhaun = {
+    step equi* half = 12mm,
+    scale fixed = 1,
+    style 1 = {draw,fill=oc-red-4},
+    style 2 = {draw,fill=oc-yellow-4},
+    style 3 = {draw,fill=oc-orange-4},
+    style 4 = {draw,fill=oc-pink-4},
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+
+\begin{dispExample*}{gea-example}
+% \usepackage{opencolor}
+\begin{tikzpicture}
+\draw[
+  fill gea Grafenhaun = {
+    step equi = 10mm,
+    scale fixed = 1,
+    init-row< =
+      \TFRowColorLet{mycolor}{oc-lime-4}{oc-orange-4},
+    style 1 = {fill=mycolor},
+    style 2 = {fill=mycolor!75!white},
+    style 3 = {fill=mycolor!75!gray},
+    style 4 = {fill=mycolor!75!black},
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docTikzKeys}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
 \printindex
 
 \end{document}

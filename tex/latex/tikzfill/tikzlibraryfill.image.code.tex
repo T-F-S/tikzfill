@@ -1,8 +1,8 @@
-%% The LaTeX package tikzfill - version 1.0.1 (2023/08/08)
+%% The LaTeX package tikzfill - version 1.1.0 (2026/03/26)
 %% tikzlibraryfill.image.code.tex: filling with images
 %%
 %% -------------------------------------------------------------------------------------------
-%% Copyright (c) 2022-2023 by Prof. Dr. Dr. Thomas F. Sturm <thomas dot sturm at unibw dot de>
+%% Copyright (c) 2022-2026 by Prof. Dr. Dr. Thomas F. Sturm <thomas dot sturm at unibw dot de>
 %% -------------------------------------------------------------------------------------------
 %%
 %% This work may be distributed and/or modified under the
@@ -17,12 +17,12 @@
 %%
 %% This work consists of all files listed in README.md
 %%
-\ProvidesFile{tikzlibraryfill.image.code.tex}[2023/08/08 v1.0.1 Image filling library]
+\ProvidesFile{tikzlibraryfill.image.code.tex}[2026/03/26 v1.1.0 Image filling library]
 
-\ifx\ExplSyntaxOn\undefined
-  \input expl3-generic\relax
-\fi
 \ExplSyntaxOn
+
+\dim_zero_new:N \l__tikzfill_tmpa_dim
+\dim_zero_new:N \l__tikzfill_tmpb_dim
 
 \box_new:N \l__tikzfill_img_box
 
@@ -45,16 +45,16 @@
 
 \cs_new_nopar:Npn \__tikzfill_img_process_ppbb:
   {
-    \pgf@process{\pgfpointanchor{path~picture~bounding~box}{south~west}}
+    \pgf@process{\pgfpointanchor{ path~picture~bounding~box } { south~west }}
     \tl_set:Nx \l__tikzfill_img_xa_tl { \dim_eval:n { \pgf@x } }
     \tl_set:Nx \l__tikzfill_img_ya_tl { \dim_eval:n { \pgf@y } }
-    \pgf@process{\pgfpointanchor{path~picture~bounding~box}{north~east}}
+    \pgf@process{\pgfpointanchor{ path~picture~bounding~box } { north~east }}
     \tl_set:Nx \l__tikzfill_img_xb_tl { \dim_eval:n { \pgf@x } }
     \tl_set:Nx \l__tikzfill_img_yb_tl { \dim_eval:n { \pgf@y } }
     \tl_set:Nx \l__tikzfill_img_width_tl  { \dim_eval:n { \pgf@x - \l__tikzfill_img_xa_tl } }
     \tl_set:Nx \l__tikzfill_img_height_tl { \dim_eval:n { \pgf@y - \l__tikzfill_img_ya_tl } }
-    \pgfsetfillopacity{\l__tikzfill_img_opacity_tl}
-    \pgfsetstrokeopacity{\l__tikzfill_img_opacity_tl}
+    \pgfsetfillopacity{ \l__tikzfill_img_opacity_tl }
+    \pgfsetstrokeopacity{ \l__tikzfill_img_opacity_tl }
   }
 
 
@@ -75,24 +75,21 @@
   {
     \pgftext
       [
-        x = \dim_eval:n { \l__tikzfill_img_xa_tl + \l__tikzfill_img_width_tl/2 },
-        y = \dim_eval:n { \l__tikzfill_img_ya_tl + \l__tikzfill_img_height_tl/2 }
-      ]{ #1 }
+        x = \dim_eval:n { \l__tikzfill_img_xa_tl + \l__tikzfill_img_width_tl / 2 },
+        y = \dim_eval:n { \l__tikzfill_img_ya_tl + \l__tikzfill_img_height_tl / 2 }
+      ] { #1 }
   }
 
 
 \cs_new_nopar:Npn \__tikzfill_img_include_graphics:n #1
   {
-    \tl_set_eq:NN \l_tmpa_tl \l__tikzfill_img_graphics_options_tl
-    \tl_if_empty:NTF \l_tmpa_tl
+    \tl_if_empty:NTF \l__tikzfill_img_graphics_options_tl
       {
-        \tl_set:Nn \l_tmpa_tl { \includegraphics }
+        \includegraphics { #1 }
       }
       {
-        \tl_put_left:Nn \l_tmpa_tl { \includegraphics[ }
-        \tl_put_right:Nn \l_tmpa_tl { ] }
+        \exp_args:NNV \includegraphics [ \l__tikzfill_img_graphics_options_tl ] { #1 }
       }
-    \l_tmpa_tl { #1 }
   }
 
 
@@ -116,7 +113,7 @@
       {
         \pgfinterruptpicture
         \group_begin:
-        \pgfsetbaseline{0pt}
+        \pgfsetbaseline { 0pt }
         \tikzpicture#1\endtikzpicture
         \group_end:
         \endpgfinterruptpicture
@@ -136,34 +133,34 @@
 \cs_new_nopar:Npn \__tikzfill_img_stretch_draw_box:
   {
     \box_resize_to_wd_and_ht_plus_dp:Nnn \l__tikzfill_img_box
-      { \fp_to_dim:n { \l__tikzfill_img_scale_tl*\l__tikzfill_img_width_tl  }}
-      { \fp_to_dim:n { \l__tikzfill_img_scale_tl*\l__tikzfill_img_height_tl }}
+      { \fp_to_dim:n { \l__tikzfill_img_scale_tl * \l__tikzfill_img_width_tl  }}
+      { \fp_to_dim:n { \l__tikzfill_img_scale_tl * \l__tikzfill_img_height_tl }}
     \__tikzfill_img_draw_box:
   }
 
 
 \cs_new_nopar:Npn \__tikzfill_img_compute_scales:
   {
-    \dim_set:Nn \l_tmpa_dim { \box_wd:N \l__tikzfill_img_box }
-    \dim_compare:nNnTF \l_tmpa_dim < {1pt}
+    \dim_set:Nn \l__tikzfill_tmpa_dim { \box_wd:N \l__tikzfill_img_box }
+    \dim_compare:nNnTF { \l__tikzfill_tmpa_dim } < { 1pt }
       {
         \fp_set_eq:NN \l__tikzfill_img_scale_x_fp \c_one_fp
       }
       {
         \fp_set:Nn \l__tikzfill_img_scale_x_fp
           {
-            \l__tikzfill_img_scale_tl * \l__tikzfill_img_width_tl / \l_tmpa_dim
+            \l__tikzfill_img_scale_tl * \l__tikzfill_img_width_tl / \l__tikzfill_tmpa_dim
           }
       }
-    \dim_set:Nn \l_tmpb_dim { \box_ht:N \l__tikzfill_img_box + \box_dp:N \l__tikzfill_img_box }
-    \dim_compare:nNnTF \l_tmpb_dim < {1pt}
+    \dim_set:Nn \l__tikzfill_tmpb_dim { \box_ht:N \l__tikzfill_img_box + \box_dp:N \l__tikzfill_img_box }
+    \dim_compare:nNnTF { \l__tikzfill_tmpb_dim } < { 1pt }
       {
         \fp_set_eq:NN \l__tikzfill_img_scale_y_fp \c_one_fp
       }
       {
         \fp_set:Nn \l__tikzfill_img_scale_y_fp
           {
-            \l__tikzfill_img_scale_tl * \l__tikzfill_img_height_tl / \l_tmpb_dim
+            \l__tikzfill_img_scale_tl * \l__tikzfill_img_height_tl / \l__tikzfill_tmpb_dim
           }
       }
   }
@@ -181,7 +178,7 @@
 \cs_new_nopar:Npn \__tikzfill_img_overzoom_draw_box:
   {
     \__tikzfill_img_compute_scales:
-    \fp_compare:nNnTF \l__tikzfill_img_scale_x_fp > \l__tikzfill_img_scale_y_fp
+    \fp_compare:nNnTF { \l__tikzfill_img_scale_x_fp } > { \l__tikzfill_img_scale_y_fp }
       { \fp_set_eq:NN \l__tikzfill_img_scale_y_fp \l__tikzfill_img_scale_x_fp }
       { \fp_set_eq:NN \l__tikzfill_img_scale_x_fp \l__tikzfill_img_scale_y_fp }
     \__tikzfill_img_scale_draw_box:
@@ -191,7 +188,7 @@
 \cs_new_nopar:Npn \__tikzfill_img_zoom_draw_box:
   {
     \__tikzfill_img_compute_scales:
-    \fp_compare:nNnTF \l__tikzfill_img_scale_x_fp > \l__tikzfill_img_scale_y_fp
+    \fp_compare:nNnTF { \l__tikzfill_img_scale_x_fp } > { \l__tikzfill_img_scale_y_fp }
       { \fp_set_eq:NN \l__tikzfill_img_scale_x_fp \l__tikzfill_img_scale_y_fp }
       { \fp_set_eq:NN \l__tikzfill_img_scale_y_fp \l__tikzfill_img_scale_x_fp }
     \__tikzfill_img_scale_draw_box:
@@ -201,10 +198,10 @@
 \cs_new_nopar:Npn \__tikzfill_img_shrink_draw_box:
   {
     \__tikzfill_img_compute_scales:
-    \fp_compare:nNnTF \l__tikzfill_img_scale_x_fp > \l__tikzfill_img_scale_y_fp
+    \fp_compare:nNnTF { \l__tikzfill_img_scale_x_fp } > { \l__tikzfill_img_scale_y_fp }
       { \fp_set_eq:NN \l__tikzfill_img_scale_x_fp \l__tikzfill_img_scale_y_fp }
       { \fp_set_eq:NN \l__tikzfill_img_scale_y_fp \l__tikzfill_img_scale_x_fp }
-    \fp_compare:nNnT \l__tikzfill_img_scale_x_fp > 1
+    \fp_compare:nNnT { \l__tikzfill_img_scale_x_fp } > { \c_one_fp }
       {
         \fp_set_eq:NN \l__tikzfill_img_scale_x_fp \c_one_fp
         \fp_set_eq:NN \l__tikzfill_img_scale_y_fp \c_one_fp
@@ -215,19 +212,19 @@
 
 \cs_new_nopar:Npn \__tikzfill_img_tile_draw_box:
   {
-    \dim_set:Nn \l_tmpa_dim { \box_wd:N \l__tikzfill_img_box }
-    \dim_set:Nn \l_tmpb_dim { \box_ht:N \l__tikzfill_img_box + \box_dp:N \l__tikzfill_img_box }
-    \dim_set:Nn \l_tmpb_dim { -\l_tmpb_dim }
+    \dim_set:Nn \l__tikzfill_tmpa_dim { \box_wd:N \l__tikzfill_img_box }
+    \dim_set:Nn \l__tikzfill_tmpb_dim { \box_ht:N \l__tikzfill_img_box + \box_dp:N \l__tikzfill_img_box }
+    \dim_set:Nn \l__tikzfill_tmpb_dim { - \l__tikzfill_tmpb_dim }
 
     \dim_step_variable:nnnNn
       { \l__tikzfill_img_xa_tl }
-      { \l_tmpa_dim }
+      { \l__tikzfill_tmpa_dim }
       { \l__tikzfill_img_xb_tl }
         \l__tikzfill_img_xc_tl
       {
         \dim_step_variable:nnnNn
           { \l__tikzfill_img_yb_tl }
-          { \l_tmpb_dim }
+          { \l__tikzfill_tmpb_dim }
           { \l__tikzfill_img_ya_tl }
             \l__tikzfill_img_yc_tl
           {
@@ -238,7 +235,7 @@
                 left,
                 top
               ]
-              { \box_use:N\l__tikzfill_img_box }
+              { \box_use:N \l__tikzfill_img_box }
           }
       }
   }
@@ -246,13 +243,13 @@
 
 \tikzset
   {
-    fill~image~opacity/.store~in=\l__tikzfill_img_opacity_tl,
-    fill~image~opacity=1,
-    fill~image~scale/.store~in=\l__tikzfill_img_scale_tl,
-    fill~image~scale=1,
-    fill~image~options/.store~in=\l__tikzfill_img_graphics_options_tl,
-    fill~image~options=,
-    fill~plain~image/.code=
+    fill~image~opacity / .store~in = \l__tikzfill_img_opacity_tl,
+    fill~image~opacity = 1,
+    fill~image~scale   / .store~in   = \l__tikzfill_img_scale_tl,
+    fill~image~scale   = 1,
+    fill~image~options / .store~in = \l__tikzfill_img_graphics_options_tl,
+    fill~image~options = ,
+    fill~plain~image   /.code =
       {
         \__tikzfill_img_path_picture:n
           {
@@ -350,10 +347,10 @@
           \__tikzfill_img_tile_draw_box:
         }
       },
-    fill~tile~picture*/.code~n~args={2}
+    fill~tile~picture*/.code~n~args = { 2 }
       {
         \__tikzfill_img_set_box_to_picture:n { #2 }
-        \box_scale:Nnn \l__tikzfill_img_box { #1 }{ #1 }
+        \box_scale:Nnn \l__tikzfill_img_box { #1 } { #1 }
         \__tikzfill_img_path_picture:n
         {
           \__tikzfill_img_tile_draw_box:
