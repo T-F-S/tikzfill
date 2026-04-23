@@ -1,4 +1,4 @@
-# The LaTeX package tikzfill - version 1.1.0 (2026/03/26)
+# The LaTeX package tikzfill - version 1.2.0 (2026/04/23)
 
 [![CTAN](https://img.shields.io/ctan/v/tikzfill.svg)](https://www.ctan.org/pkg/tikzfill)
 

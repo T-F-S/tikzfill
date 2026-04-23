@@ -1,4 +1,4 @@
-%% The LaTeX package tikzfill - version 1.1.0 (2026/03/26)
+%% The LaTeX package tikzfill - version 1.2.0 (2026/04/23)
 %% tikzlibraryfill.geomarray.code.tex: filling with geometric arrays
 %%
 %% -------------------------------------------------------------------------------------------
@@ -17,7 +17,7 @@
 %%
 %% This work consists of all files listed in README.md
 %%
-\ProvidesFile{tikzlibraryfill.geomarray.code.tex}[2026/03/26 v1.1.0 Geometric array filling library]
+\ProvidesFile{tikzlibraryfill.geomarray.code.tex}[2026/04/23 v1.2.0 Geometric array filling library]
 
 \ExplSyntaxOn
 
@@ -34,8 +34,16 @@
 
 \tl_new:N \l_tikzfill_gea_col_tl
 \tl_new:N \l_tikzfill_gea_row_tl
+\tl_new:N \l_tikzfill_gea_ratio_tl
+\tl_new:N \l_tikzfill_gea_prime_col_i_tl
+\tl_new:N \l_tikzfill_gea_prime_col_ii_tl
 
+\bool_new:N \l__tikzfill_gea_draw_item_bool
 \bool_new:N \l__tikzfill_gea_triangular_bool
+\bool_new:N \l__tikzfill_gea_xflip_even_bool
+\bool_new:N \l__tikzfill_gea_xflip_odd_bool
+\bool_new:N \l__tikzfill_gea_yflip_even_bool
+\bool_new:N \l__tikzfill_gea_yflip_odd_bool
 
 \dim_new:N \l__tikzfill_gea_height_dim
 \dim_new:N \l__tikzfill_gea_width_dim
@@ -72,6 +80,11 @@
 \tl_new:N \l__tikzfill_gea_ya_tl
 \tl_new:N \l__tikzfill_gea_yb_tl
 \tl_new:N \l__tikzfill_gea_yc_tl
+\tl_new:N \l__tikzfill_gea_yd_tl
+\tl_new:N \l__tikzfill_gea_ye_tl
+\tl_new:N \l__tikzfill_gea_yf_tl
+\tl_new:N \l__tikzfill_gea_yg_tl
+\tl_new:N \l__tikzfill_gea_yh_tl
 \tl_new:N \l__tikzfill_gea_yshift_tl
 
 
@@ -157,6 +170,7 @@
       }
 
     \__tikzfill_gea_interpol_init:
+    \bool_set_true:N \l__tikzfill_gea_draw_item_bool
     \l__tikzfill_gea_init_tl  % < customization
     % loop rows
     \int_step_variable:nnNn { 0 } { \l_tikzfill_gea_rows_int } \l_tikzfill_gea_row_tl
@@ -172,6 +186,39 @@
           {
             \dim_set_eq:NN \l__tikzfill_gea_xoff_final_dim \l__tikzfill_gea_xoff_dim
           }
+        \int_if_odd:nTF { \l_tikzfill_gea_row_tl }
+          {
+            \bool_if:nTF \l__tikzfill_gea_xflip_odd_bool
+              {
+                \tikzset { tikzfill_gea_xflip / .style = { xscale = -1 } }
+              }
+              {
+                \tikzset { tikzfill_gea_xflip / .style = }
+              }
+            \bool_if:nTF \l__tikzfill_gea_yflip_odd_bool
+              {
+                \tikzset { tikzfill_gea_yflip / .style = { yscale = -1 } }
+              }
+              {
+                \tikzset { tikzfill_gea_yflip / .style = }
+              }
+          }
+          {
+            \bool_if:nTF \l__tikzfill_gea_xflip_even_bool
+              {
+                \tikzset { tikzfill_gea_xflip / .style = { xscale = -1 } }
+              }
+              {
+                \tikzset { tikzfill_gea_xflip / .style = }
+              }
+            \bool_if:nTF \l__tikzfill_gea_yflip_even_bool
+              {
+                \tikzset { tikzfill_gea_yflip / .style = { yscale = -1 } }
+              }
+              {
+                \tikzset { tikzfill_gea_yflip / .style = }
+              }
+          }
         \__tikzfill_gea_interpolation:
         \l__tikzfill_gea_init_row_tl  % < customization
         % loop columns
@@ -181,10 +228,15 @@
               [
                 xshift = \fp_to_dim:n { \l__tikzfill_gea_xoff_final_dim
                                       + \l_tikzfill_gea_col_tl * \l_tikzfill_gea_xstep_dim },
-                yshift = \l__tikzfill_gea_yshift_tl
+                yshift = \l__tikzfill_gea_yshift_tl,
+                tikzfill_gea_xflip,
+                tikzfill_gea_yflip
               ]
               \l__tikzfill_gea_init_item_tl  % < customization
-              \l__tikzfill_gea_draw_item_tl  % < customization
+              \bool_if:nT \l__tikzfill_gea_draw_item_bool
+                {
+                  \l__tikzfill_gea_draw_item_tl  % < customization
+                }
             \end{ scope }
           }
       }
@@ -253,6 +305,45 @@
   }
 
 
+\prg_new_conditional:Npnn \__tikzfill_gea_if_row_col:nn #1#2 { p, T, F, TF }
+  {
+    \int_compare:nNnTF { #1 } = { \l_tikzfill_gea_row_tl }
+      {
+        \int_compare:nNnTF { #2 } = { \l_tikzfill_gea_col_tl }
+          {
+            \prg_return_true:
+          }
+          {
+            \prg_return_false:
+          }
+      }
+      {
+        \prg_return_false:
+      }
+  }
+
+\prg_new_conditional:Npnn \__tikzfill_gea_if_row:n #1 { p, T, F, TF }
+  {
+    \int_compare:nNnTF { #1 } = { \l_tikzfill_gea_row_tl }
+      {
+        \prg_return_true:
+      }
+      {
+        \prg_return_false:
+      }
+  }
+
+\prg_new_conditional:Npnn \__tikzfill_gea_if_col:n #1 { p, T, F, TF }
+  {
+    \int_compare:nNnTF { #1 } = { \l_tikzfill_gea_col_tl }
+      {
+        \prg_return_true:
+      }
+      {
+        \prg_return_false:
+      }
+  }
+
 
 \NewDocumentCommand \TFRowColorLet { m m m }
   {
@@ -318,10 +409,42 @@
     step~equi*~half/.style = { xstep=#1, ystep~equidistance*, ystep= \l_tikzfill_gea_ystep_dim / 2 },
     step~equi~double/.style = { xstep=#1, ystep~equidistance, ystep= \l_tikzfill_gea_ystep_dim * 2 },
     step~equi*~double/.style = { xstep=#1, ystep~equidistance*, ystep= \l_tikzfill_gea_ystep_dim * 2 },
+
     triangular/.is~choice,
-    triangular/true/.code = \bool_set_true:N \l__tikzfill_gea_triangular_bool,
+    triangular/true/.code  = \bool_set_true:N \l__tikzfill_gea_triangular_bool,
     triangular/false/.code = \bool_set_false:N \l__tikzfill_gea_triangular_bool,
     triangular/.default = true,
+
+    xflip~even/.is~choice,
+    xflip~even/true/.code  = \bool_set_true:N \l__tikzfill_gea_xflip_even_bool,
+    xflip~even/false/.code = \bool_set_false:N \l__tikzfill_gea_xflip_even_bool,
+    xflip~even/.default = true,
+
+    xflip~odd/.is~choice,
+    xflip~odd/true/.code  = \bool_set_true:N \l__tikzfill_gea_xflip_odd_bool,
+    xflip~odd/false/.code = \bool_set_false:N \l__tikzfill_gea_xflip_odd_bool,
+    xflip~odd/.default = true,
+
+    xflip/.is~choice,
+    xflip/true/.style  = { xflip~even=true,  xflip~odd=true },
+    xflip/false/.style = { xflip~even=false, xflip~odd=false },
+    xflip/.default = true,
+
+    yflip~even/.is~choice,
+    yflip~even/true/.code = \bool_set_true:N \l__tikzfill_gea_yflip_even_bool,
+    yflip~even/false/.code = \bool_set_false:N \l__tikzfill_gea_yflip_even_bool,
+    yflip~even/.default = true,
+
+    yflip~odd/.is~choice,
+    yflip~odd/true/.code = \bool_set_true:N \l__tikzfill_gea_yflip_odd_bool,
+    yflip~odd/false/.code = \bool_set_false:N \l__tikzfill_gea_yflip_odd_bool,
+    yflip~odd/.default = true,
+
+    yflip/.is~choice,
+    yflip/true/.style  = { yflip~even=true,  yflip~odd=true },
+    yflip/false/.style = { yflip~even=false, yflip~odd=false },
+    yflip/.default = true,
+
     scale / .code = { \seq_set_from_clist:Nn \l__tikzfill_gea_scale_seq { #1 } },
     scale~linear / .style~n~args = { 2 } { scale = { 0/#1 , 1/#2 } },
     scale~fixed / .style = { scale = { 0/#1 , 1/#1 } },
@@ -429,6 +552,25 @@
       },
     debug~text / .default = black,
 
+    debug~node / .style =
+      {
+        init-row< =
+          {
+            \tl_set:Ne \l__tikzfill_gea_fontsize_tl  % heurism
+              { \fp_to_dim:n { max( 1pt, \l_tikzfill_gea_xstep_dim * \l_tikzfill_gea_scale_fp / 4 ) } }
+          },
+        node< =
+          {
+            node~font = \fontsize{ \l__tikzfill_gea_fontsize_tl } { \l__tikzfill_gea_fontsize_tl }\selectfont,
+            #1
+          }
+          {
+            ( \l_tikzfill_gea_row_tl , \l_tikzfill_gea_col_tl )
+          }
+      },
+    debug~node / .default = black,
+
+    style~base / .style = { /tikz/fill-gea-style-base / .style = { #1 } },
     style~1 / .style = { /tikz/fill-gea-style-1 / .style = { #1 } },
     style~2 / .style = { /tikz/fill-gea-style-2 / .style = { #1 } },
     style~3 / .style = { /tikz/fill-gea-style-3 / .style = { #1 } },
@@ -438,6 +580,218 @@
     style~7 / .style = { /tikz/fill-gea-style-7 / .style = { #1 } },
     style~8 / .style = { /tikz/fill-gea-style-8 / .style = { #1 } },
     style~9 / .style = { /tikz/fill-gea-style-9 / .style = { #1 } },
+    style~10 / .style = { /tikz/fill-gea-style-10 / .style = { #1 } },
+    style~11 / .style = { /tikz/fill-gea-style-11 / .style = { #1 } },
+    style~12 / .style = { /tikz/fill-gea-style-12 / .style = { #1 } },
+    style~13 / .style = { /tikz/fill-gea-style-13 / .style = { #1 } },
+    style~14 / .style = { /tikz/fill-gea-style-14 / .style = { #1 } },
+
+    prime~color~1 /.code = { \tl_set:Nn \l_tikzfill_gea_prime_col_i_tl { #1 } },
+    prime~color~2 /.code = { \tl_set:Nn \l_tikzfill_gea_prime_col_ii_tl { #1 } },
+
+    ratio /.code =
+      {
+        \tl_set:Ne \l_tikzfill_gea_ratio_tl { \fp_to_decimal:n { #1 } }
+      },
+
+    draw-if-row-col / .style =
+      {
+        init< =
+          {
+            \bool_set_false:N \l__tikzfill_gea_draw_item_bool
+            \seq_clear_new:N \l__tikzfill_gea_bool_seq
+            \clist_map_inline:nn { #1 }
+              {
+                \__tikzfill_gea_row_col_split:w ##1 \q_stop
+              }
+          },
+        init-item< =
+          {
+            \__tikzfill_gea_set_true_if_in_bool_seq:
+          },
+      },
+    draw-if-not-row-col / .style =
+      {
+        init< =
+          {
+            \bool_set_true:N \l__tikzfill_gea_draw_item_bool
+            \seq_clear_new:N \l__tikzfill_gea_bool_seq
+            \clist_map_inline:nn { #1 }
+              {
+                \__tikzfill_gea_row_col_split:w ##1 \q_stop
+              }
+          },
+        init-item< =
+          {
+            \__tikzfill_gea_set_false_if_in_bool_seq:
+          },
+      },
+    draw-if-row / .style =
+      {
+        init< =
+          {
+            \seq_clear_new:N \l__tikzfill_gea_bool_seq
+            \clist_map_inline:nn { #1 }
+              {
+                \seq_put_right:Nn \l__tikzfill_gea_bool_seq
+                  {
+                    \__tikzfill_gea_if_row_p:n { ##1 }
+                  }
+              }
+          },
+        init-row< =
+          {
+            \bool_set_false:N \l__tikzfill_gea_draw_item_bool
+            \__tikzfill_gea_set_true_if_in_bool_seq:
+          },
+      },
+    draw-if-not-row / .style =
+      {
+        init< =
+          {
+            \seq_clear_new:N \l__tikzfill_gea_bool_seq
+            \clist_map_inline:nn { #1 }
+              {
+                \seq_put_right:Nn \l__tikzfill_gea_bool_seq
+                  {
+                    \__tikzfill_gea_if_row_p:n { ##1 }
+                  }
+              }
+          },
+        init-row< =
+          {
+            \bool_set_true:N \l__tikzfill_gea_draw_item_bool
+            \__tikzfill_gea_set_false_if_in_bool_seq:
+          },
+      },
+    draw-if-even-row / .style =
+      {
+        init-row< =
+          {
+            \bool_set:Nn \l__tikzfill_gea_draw_item_bool
+              {
+                \int_if_even_p:n { \l_tikzfill_gea_row_tl }
+              }
+          },
+      },
+    draw-if-odd-row / .style =
+      {
+        init-row< =
+          {
+            \bool_set:Nn \l__tikzfill_gea_draw_item_bool
+              {
+                \int_if_odd_p:n { \l_tikzfill_gea_row_tl }
+              }
+          },
+      },
+    draw-if-col / .style =
+      {
+        init< =
+          {
+            \bool_set_false:N \l__tikzfill_gea_draw_item_bool
+            \seq_clear_new:N \l__tikzfill_gea_bool_seq
+            \clist_map_inline:nn { #1 }
+              {
+                \seq_put_right:Nn \l__tikzfill_gea_bool_seq
+                  {
+                    \__tikzfill_gea_if_col_p:n { ##1 }
+                  }
+              }
+          },
+        init-item< =
+          {
+            \__tikzfill_gea_set_true_if_in_bool_seq:
+          },
+      },
+    draw-if-not-col / .style =
+      {
+        init< =
+          {
+            \bool_set_true:N \l__tikzfill_gea_draw_item_bool
+            \seq_clear_new:N \l__tikzfill_gea_bool_seq
+            \clist_map_inline:nn { #1 }
+              {
+                \seq_put_right:Nn \l__tikzfill_gea_bool_seq
+                  {
+                    \__tikzfill_gea_if_col_p:n { ##1 }
+                  }
+              }
+          },
+        init-item< =
+          {
+            \__tikzfill_gea_set_false_if_in_bool_seq:
+          },
+      },
+    draw-if-even-col / .style =
+      {
+        init-item< =
+          {
+            \bool_set:Nn \l__tikzfill_gea_draw_item_bool
+              {
+                \int_if_even_p:n { \l_tikzfill_gea_col_tl }
+              }
+          },
+      },
+    draw-if-odd-col / .style =
+      {
+        init-item< =
+          {
+            \bool_set:Nn \l__tikzfill_gea_draw_item_bool
+              {
+                \int_if_odd_p:n { \l_tikzfill_gea_col_tl }
+              }
+          },
+      },
+    draw-if-random / .style =
+      {
+        init< =
+          {
+            \bool_set_false:N \l__tikzfill_gea_draw_item_bool
+            \fp_zero_new:N \l__tikzfill_gea_random_limit_fp
+            \fp_set:Nn \l__tikzfill_gea_random_limit_fp { #1 }
+          },
+        init-item< =
+          {
+            \fp_compare:nNnT { rand() } < { \l__tikzfill_gea_random_limit_fp }
+              {
+                \bool_set_true:N \l__tikzfill_gea_draw_item_bool
+              }
+          },
+      },
+
+  }
+
+
+\cs_new_nopar:Npn \__tikzfill_gea_row_col_split:w #1 / #2 \q_stop
+  {
+    \seq_put_right:Nn \l__tikzfill_gea_bool_seq
+      {
+        \__tikzfill_gea_if_row_col_p:nn { #1 } { #2 }
+      }
+  }
+
+\cs_new_nopar:Npn \__tikzfill_gea_set_true_if_in_bool_seq:
+  {
+    \seq_map_inline:Nn \l__tikzfill_gea_bool_seq
+      {
+        \bool_if:nT { ##1 }
+          {
+            \bool_set_true:N \l__tikzfill_gea_draw_item_bool
+            \seq_map_break:
+          }
+      }
+  }
+
+\cs_new_nopar:Npn \__tikzfill_gea_set_false_if_in_bool_seq:
+  {
+    \seq_map_inline:Nn \l__tikzfill_gea_bool_seq
+      {
+        \bool_if:nT { ##1 }
+          {
+            \bool_set_false:N \l__tikzfill_gea_draw_item_bool
+            \seq_map_break:
+          }
+      }
   }
 
 
@@ -450,7 +804,10 @@
     xstep = 10mm,
     ystep = 10mm,
     triangular = false,
+    xflip      = false,
+    yflip      = false,
     scale~fixed = 0.9,
+    style~base = ,
     style~1 = { fill=red },
     style~2 = { fill=green },
     style~3 = { fill=blue },
@@ -460,6 +817,14 @@
     style~7 = { fill=lightgray },
     style~8 = { fill=orange },
     style~9 = { fill=purple },
+    style~10 = { fill=lime },
+    style~11 = { fill=olive },
+    style~12 = { fill=pink },
+    style~13 = { fill=teal },
+    style~14 = { fill=violet },
+    prime~color~1 = red,
+    prime~color~2 = blue,
+    ratio = 1,
   }
 
 
@@ -653,6 +1018,88 @@
           },
         #1
       }},
+    fill~gea~Baumgarten / .style = { fill~geomarray =
+      {
+        init-row =
+          {
+            \tl_set:Ne \l__tikzfill_gea_xa_tl
+              { \fp_to_dim:n { \l_tikzfill_gea_xstep_dim / 2 * \l_tikzfill_gea_scale_fp } }
+            \tl_set:Ne \l__tikzfill_gea_xb_tl { \fp_to_dim:n { \l__tikzfill_gea_xa_tl * 2 } }
+            \tl_set:Ne \l__tikzfill_gea_ya_tl
+              { \fp_to_dim:n { \l_tikzfill_gea_ystep_dim / 4 * \l_tikzfill_gea_scale_fp } }
+            \tl_set:Ne \l__tikzfill_gea_yb_tl { \fp_to_dim:n { \l__tikzfill_gea_ya_tl * 2 } }
+            \tl_set:Ne \l__tikzfill_gea_yc_tl { \fp_to_dim:n { \l__tikzfill_gea_ya_tl * 3 } }
+          },
+        draw-item =
+          {
+            \path [ fill-gea-style-1 ] \pgfextra
+              {
+                \pgfpathmoveto{\pgfqpoint { \l__tikzfill_gea_xa_tl } { - \l__tikzfill_gea_ya_tl }}
+                \pgfpathlineto{\pgfqpoint { \l__tikzfill_gea_xb_tl } { 0pt }}
+                \pgfpathlineto{\pgfqpoint { 0pt } { \l__tikzfill_gea_yb_tl }}
+                \pgfpathlineto{\pgfqpoint { - \l__tikzfill_gea_xa_tl } { \l__tikzfill_gea_ya_tl }}
+                \pgfpathclose
+              } ;
+            \path [ fill-gea-style-2 ] \pgfextra
+              {
+                \pgfpathmoveto{ \pgfpointorigin }
+                \pgfpathlineto{\pgfqpoint { - \l__tikzfill_gea_xb_tl } { - \l__tikzfill_gea_yb_tl }}
+                \pgfpathlineto{\pgfqpoint { - \l__tikzfill_gea_xa_tl } { - \l__tikzfill_gea_yc_tl }}
+                \pgfpathlineto{\pgfqpoint { \l__tikzfill_gea_xa_tl } { - \l__tikzfill_gea_ya_tl }}
+                \pgfpathclose
+              } ;
+          },
+        #1
+      }},
+    fill~gea~Ostergaden / .style = { fill~geomarray =
+      {
+        ratio = 2-sqrt(2),
+        init-row =
+          {
+            \tl_set:Ne \l__tikzfill_gea_xb_tl
+              { \fp_to_dim:n { \l_tikzfill_gea_xstep_dim / 2 * \l_tikzfill_gea_scale_fp } }
+            \tl_set:Ne \l__tikzfill_gea_xa_tl
+              { \fp_to_dim:n { \l__tikzfill_gea_xb_tl * \l_tikzfill_gea_ratio_tl } }
+            \tl_set:Ne \l__tikzfill_gea_xc_tl
+              { \fp_to_dim:n { \l__tikzfill_gea_xb_tl * 2 - \l__tikzfill_gea_xa_tl } }
+            \tl_set:Ne \l__tikzfill_gea_yb_tl
+              { \fp_to_dim:n { \l_tikzfill_gea_ystep_dim / 2 * \l_tikzfill_gea_scale_fp } }
+            \tl_set:Ne \l__tikzfill_gea_ya_tl
+              { \fp_to_dim:n { \l__tikzfill_gea_yb_tl * \l_tikzfill_gea_ratio_tl } }
+            \tl_set:Ne \l__tikzfill_gea_yc_tl
+              { \fp_to_dim:n { \l__tikzfill_gea_yb_tl * 2 - \l__tikzfill_gea_ya_tl } }
+          },
+        draw-item =
+          {
+            \path [ fill-gea-style-1 ] \pgfextra
+              {
+                \pgfpathrectanglecorners
+                  {\pgfqpoint { - \l__tikzfill_gea_xa_tl } { - \l__tikzfill_gea_ya_tl }}
+                  {\pgfqpoint {   \l__tikzfill_gea_xa_tl } {   \l__tikzfill_gea_ya_tl }}
+              } ;
+            \path [ fill-gea-style-2 ] \pgfextra
+              {
+                \pgfpathmoveto{\pgfqpoint { \l__tikzfill_gea_xa_tl } { - \l__tikzfill_gea_ya_tl }}
+                \pgfpathlineto{\pgfqpoint { \l__tikzfill_gea_xb_tl } { - \l__tikzfill_gea_yb_tl }}
+                \pgfpathlineto{\pgfqpoint { \l__tikzfill_gea_xc_tl } { - \l__tikzfill_gea_ya_tl }}
+                \pgfpathlineto{\pgfqpoint { \l__tikzfill_gea_xc_tl } { \l__tikzfill_gea_ya_tl }}
+                \pgfpathlineto{\pgfqpoint { \l__tikzfill_gea_xb_tl } { \l__tikzfill_gea_yb_tl }}
+                \pgfpathlineto{\pgfqpoint { \l__tikzfill_gea_xa_tl } { \l__tikzfill_gea_ya_tl }}
+                \pgfpathclose
+              } ;
+            \path [ fill-gea-style-3 ] \pgfextra
+              {
+                \pgfpathmoveto{\pgfqpoint { \l__tikzfill_gea_xa_tl } { \l__tikzfill_gea_ya_tl }}
+                \pgfpathlineto{\pgfqpoint { \l__tikzfill_gea_xb_tl } { \l__tikzfill_gea_yb_tl }}
+                \pgfpathlineto{\pgfqpoint { \l__tikzfill_gea_xa_tl } { \l__tikzfill_gea_yc_tl }}
+                \pgfpathlineto{\pgfqpoint { - \l__tikzfill_gea_xa_tl } { \l__tikzfill_gea_yc_tl }}
+                \pgfpathlineto{\pgfqpoint { - \l__tikzfill_gea_xb_tl } { \l__tikzfill_gea_yb_tl }}
+                \pgfpathlineto{\pgfqpoint { - \l__tikzfill_gea_xa_tl } { \l__tikzfill_gea_ya_tl }}
+                \pgfpathclose
+              } ;
+          },
+        #1
+      }},
     fill~gea~Weihmichl / .style = { fill~geomarray =
       {
         triangular,
@@ -688,8 +1135,20 @@
                 \pgfpathlineto{\pgfqpoint { \l__tikzfill_gea_xa_tl } { - \l__tikzfill_gea_ya_tl }}
                 \pgfpathlineto{\pgfqpoint { \l__tikzfill_gea_xa_tl } { \l__tikzfill_gea_ya_tl }}
                 \pgfpathlineto{\pgfpointorigin}
+                \pgfpathclose
               } ;
           },
+        #1
+      }},
+    fill~gea~Edenland / .style =  { fill~gea~Weihmichl =
+      {
+        draw-item> =
+          {
+            \colorlet { _gea_prime_1_ } { \l_tikzfill_gea_prime_col_i_tl }
+          },
+        style~1 = { fill-gea-style-base, fill=_gea_prime_1_!50!white },
+        style~2 = { fill-gea-style-base, fill=_gea_prime_1_ },
+        style~3 = { fill-gea-style-base, fill=_gea_prime_1_!50!black },
         #1
       }},
     fill~gea~Ergolding / .style = { fill~geomarray =
@@ -775,6 +1234,17 @@
                 \pgfpathclose
               } ;
           },
+        #1
+      }},
+    fill~gea~Klosterholz / .style =  { fill~gea~Hascherkeller =
+      {
+        draw-item> =
+          {
+            \colorlet { _gea_prime_1_ } { \l_tikzfill_gea_prime_col_i_tl }
+          },
+        style~1 = { fill-gea-style-base, fill=_gea_prime_1_!50!white },
+        style~2 = { fill-gea-style-base, fill=_gea_prime_1_ },
+        style~3 = { fill-gea-style-base, fill=_gea_prime_1_!50!black },
         #1
       }},
     fill~gea~Unterglaim / .style = { fill~geomarray =
@@ -1086,6 +1556,301 @@
                 \pgfpathclose
               } ;
           },
+        #1
+      }},
+    fill~gea~Niederhatzkofen / .style =  { fill~geomarray =
+      {
+        triangular,
+        ratio = 1/sqrt(3),
+        init-row =
+          {
+            \tl_set:Ne \l__tikzfill_gea_xa_tl
+              { \fp_to_dim:n { \l_tikzfill_gea_xstep_dim / 2 * \l_tikzfill_gea_scale_fp } }
+            \tl_set:Ne \l__tikzfill_gea_xb_tl { \fp_to_dim:n { \l__tikzfill_gea_xa_tl * \l_tikzfill_gea_ratio_tl } }
+            \tl_set:Ne \l__tikzfill_gea_xc_tl { \fp_to_dim:n { \l__tikzfill_gea_xa_tl - \l__tikzfill_gea_xb_tl } }
+            \tl_set:Ne \l__tikzfill_gea_xd_tl { \fp_to_dim:n { \l__tikzfill_gea_xb_tl / 2 } }
+
+            \tl_set:Ne \l__tikzfill_gea_ya_tl
+              { \fp_to_dim:n { \l_tikzfill_gea_ystep_dim / 3 * \l_tikzfill_gea_scale_fp } }
+            \tl_set:Ne \l__tikzfill_gea_yb_tl { \fp_to_dim:n { \l__tikzfill_gea_ya_tl * 2 } }
+            \tl_set:Ne \l__tikzfill_gea_yf_tl { \fp_to_dim:n { \l__tikzfill_gea_ya_tl * \l_tikzfill_gea_ratio_tl } }
+            \tl_set:Ne \l__tikzfill_gea_yg_tl { \fp_to_dim:n { \l__tikzfill_gea_yf_tl * 2 } }
+            \tl_set:Ne \l__tikzfill_gea_yc_tl { \fp_to_dim:n { \l__tikzfill_gea_yb_tl - \l__tikzfill_gea_yf_tl } }
+            \tl_set:Ne \l__tikzfill_gea_yd_tl { \fp_to_dim:n { \l__tikzfill_gea_ya_tl + \l__tikzfill_gea_yf_tl } }
+            \tl_set:Ne \l__tikzfill_gea_ye_tl { \fp_to_dim:n { \l__tikzfill_gea_yg_tl - \l__tikzfill_gea_ya_tl } }
+            \tl_set:Ne \l__tikzfill_gea_yh_tl { \fp_to_dim:n { \l__tikzfill_gea_yf_tl * 1.5 } }
+          },
+        draw-item =
+          {
+            \path [ fill-gea-style-1 ] \pgfextra
+              {
+                \pgfpathmoveto{\pgfqpoint { \l__tikzfill_gea_xb_tl } { \l__tikzfill_gea_yc_tl }}
+                \pgfpathlineto{\pgfqpoint { 0pt } { \l__tikzfill_gea_yb_tl }}
+                \pgfpathlineto{\pgfqpoint { - \l__tikzfill_gea_xc_tl } { \l__tikzfill_gea_yd_tl }}
+                \pgfpathlineto{\pgfqpoint { \l__tikzfill_gea_xb_tl } { \l__tikzfill_gea_yf_tl }}
+                \pgfpathclose
+              } ;
+            \path [ fill-gea-style-2 ] \pgfextra
+              {
+                \pgfpathmoveto{\pgfqpoint { - \l__tikzfill_gea_xc_tl } { \l__tikzfill_gea_yd_tl }}
+                \pgfpathlineto{\pgfqpoint { - \l__tikzfill_gea_xa_tl } { \l__tikzfill_gea_ya_tl }}
+                \pgfpathlineto{\pgfqpoint { - \l__tikzfill_gea_xa_tl } { \l__tikzfill_gea_ye_tl }}
+                \pgfpathlineto{\pgfqpoint { 0pt } { \l__tikzfill_gea_yg_tl }}
+                \pgfpathclose
+              } ;
+            \path [ fill-gea-style-3 ] \pgfextra
+              {
+                \pgfpathmoveto{\pgfqpoint { - \l__tikzfill_gea_xa_tl } { \l__tikzfill_gea_ye_tl }}
+                \pgfpathlineto{\pgfqpoint { - \l__tikzfill_gea_xa_tl } { - \l__tikzfill_gea_ya_tl }}
+                \pgfpathlineto{\pgfqpoint { - \l__tikzfill_gea_xb_tl } { - \l__tikzfill_gea_yc_tl }}
+                \pgfpathlineto{\pgfqpoint { - \l__tikzfill_gea_xb_tl } { \l__tikzfill_gea_yf_tl }}
+                \pgfpathclose
+              } ;
+            \path [ fill-gea-style-4 ] \pgfextra
+              {
+                \pgfpathmoveto{\pgfqpoint { - \l__tikzfill_gea_xb_tl } { - \l__tikzfill_gea_yc_tl }}
+                \pgfpathlineto{\pgfqpoint { 0pt } { - \l__tikzfill_gea_yb_tl }}
+                \pgfpathlineto{\pgfqpoint { \l__tikzfill_gea_xc_tl } { - \l__tikzfill_gea_yd_tl }}
+                \pgfpathlineto{\pgfqpoint { - \l__tikzfill_gea_xb_tl } { - \l__tikzfill_gea_yf_tl }}
+                \pgfpathclose
+              } ;
+            \path [ fill-gea-style-5 ] \pgfextra
+              {
+                \pgfpathmoveto{\pgfqpoint { \l__tikzfill_gea_xc_tl } { - \l__tikzfill_gea_yd_tl }}
+                \pgfpathlineto{\pgfqpoint { \l__tikzfill_gea_xa_tl } { - \l__tikzfill_gea_ya_tl }}
+                \pgfpathlineto{\pgfqpoint { \l__tikzfill_gea_xa_tl } { - \l__tikzfill_gea_ye_tl }}
+                \pgfpathlineto{\pgfqpoint { 0pt } { - \l__tikzfill_gea_yg_tl }}
+                \pgfpathclose
+              } ;
+            \path [ fill-gea-style-6 ] \pgfextra
+              {
+                \pgfpathmoveto{\pgfqpoint { \l__tikzfill_gea_xa_tl } { - \l__tikzfill_gea_ye_tl }}
+                \pgfpathlineto{\pgfqpoint { \l__tikzfill_gea_xa_tl } { \l__tikzfill_gea_ya_tl }}
+                \pgfpathlineto{\pgfqpoint { \l__tikzfill_gea_xb_tl } { \l__tikzfill_gea_yc_tl }}
+                \pgfpathlineto{\pgfqpoint { \l__tikzfill_gea_xb_tl } { - \l__tikzfill_gea_yf_tl }}
+                \pgfpathclose
+              } ;
+            \path [ fill-gea-style-7 ] \pgfextra
+              {
+                \pgfpathmoveto{\pgfqpoint { \l__tikzfill_gea_xd_tl } { \l__tikzfill_gea_yh_tl }}
+                \pgfpathlineto{\pgfqpoint { 0pt } { \l__tikzfill_gea_yg_tl }}
+                \pgfpathlineto{\pgfqpoint { - \l__tikzfill_gea_xb_tl } { \l__tikzfill_gea_yf_tl }}
+                \pgfpathlineto{\pgfqpoint { - \l__tikzfill_gea_xb_tl } { 0pt }}
+                \pgfpathlineto{\pgfpointorigin}
+                \pgfpathclose
+              } ;
+            \path [ fill-gea-style-8 ] \pgfextra
+              {
+                \pgfpathmoveto{\pgfqpoint { - \l__tikzfill_gea_xb_tl } { 0pt }}
+                \pgfpathlineto{\pgfqpoint { - \l__tikzfill_gea_xb_tl } { - \l__tikzfill_gea_yf_tl }}
+                \pgfpathlineto{\pgfqpoint { 0pt } { - \l__tikzfill_gea_yg_tl }}
+                \pgfpathlineto{\pgfqpoint { \l__tikzfill_gea_xd_tl } {  - \l__tikzfill_gea_yh_tl }}
+                \pgfpathlineto{\pgfpointorigin}
+                \pgfpathclose
+              } ;
+            \path [ fill-gea-style-9 ] \pgfextra
+              {
+                \pgfpathmoveto{\pgfqpoint { \l__tikzfill_gea_xd_tl } { - \l__tikzfill_gea_yh_tl }}
+                \pgfpathlineto{\pgfqpoint { \l__tikzfill_gea_xb_tl } { - \l__tikzfill_gea_yf_tl }}
+                \pgfpathlineto{\pgfqpoint { \l__tikzfill_gea_xb_tl } { \l__tikzfill_gea_yf_tl }}
+                \pgfpathlineto{\pgfqpoint { \l__tikzfill_gea_xd_tl } { \l__tikzfill_gea_yh_tl }}
+                \pgfpathlineto{\pgfpointorigin}
+                \pgfpathclose
+              } ;
+          },
+        #1
+      }},
+    fill~gea~Marktstauden / .style =  { fill~gea~Niederhatzkofen =
+      {
+        draw-item> =
+          {
+            \colorlet { _gea_prime_1_ } { \l_tikzfill_gea_prime_col_i_tl }
+            \colorlet { _gea_prime_2_ } { \l_tikzfill_gea_prime_col_ii_tl }
+          },
+        style~1 = { fill-gea-style-base, fill=_gea_prime_1_ },
+        style~2 = { fill-gea-style-base, fill=_gea_prime_1_!80!white },
+        style~3 = { fill-gea-style-base, fill=_gea_prime_1_!60!white },
+        style~4 = { fill-gea-style-base, fill=_gea_prime_1_!80!black },
+        style~5 = { fill-gea-style-base, fill=_gea_prime_1_!60!black },
+        style~6 = { fill-gea-style-base, fill=_gea_prime_1_!80!gray },
+        style~7 = { fill-gea-style-base, fill=_gea_prime_2_!80!white },
+        style~8 = { fill-gea-style-base, fill=_gea_prime_2_!80!black },
+        style~9 = { fill-gea-style-base, fill=_gea_prime_2_ },
+        #1
+      }},
+    fill~gea~Eggerach / .style =  { fill~gea~Niederhatzkofen =
+      {
+        style~1 = { fill-gea-style-base },
+        style~2 = { fill-gea-style-base },
+        style~3 = { fill-gea-style-base },
+        style~4 = { fill-gea-style-base },
+        style~5 = { fill-gea-style-base },
+        style~6 = { fill-gea-style-base },
+        style~7 = { fill-gea-style-base },
+        style~8 = { fill-gea-style-base },
+        style~9 = { fill-gea-style-base },
+        #1
+      }},
+    fill~gea~Alpersdorf / .style =  { fill~geomarray =
+      {
+        triangular,
+        _ystep_equidistance_special_/.code=
+          \dim_set:Nn \l_tikzfill_gea_ystep_dim { \fp_to_dim:n { \l_tikzfill_gea_xstep_dim * 3^0.25/2 } },
+        step~equi~special/.style = { xstep=##1, _ystep_equidistance_special_ },
+        init-row =
+          {
+            \tl_set:Ne \l__tikzfill_gea_xa_tl
+              { \fp_to_dim:n { \l_tikzfill_gea_xstep_dim / 2 * \l_tikzfill_gea_scale_fp } }
+            \tl_set:Ne \l__tikzfill_gea_xb_tl { \fp_to_dim:n { \l__tikzfill_gea_xa_tl / (1+sqrt(3)) } }
+            \tl_set:Ne \l__tikzfill_gea_ya_tl
+              { \fp_to_dim:n { \l_tikzfill_gea_ystep_dim / (3+sqrt(3)) * \l_tikzfill_gea_scale_fp } }
+            \tl_set:Ne \l__tikzfill_gea_yb_tl
+              { \fp_to_dim:n { \l_tikzfill_gea_ystep_dim * \l_tikzfill_gea_scale_fp - \l__tikzfill_gea_ya_tl } }
+            \tl_set:Ne \l__tikzfill_gea_yc_tl { \fp_to_dim:n { \l__tikzfill_gea_ya_tl * 2 } }
+            \tikzset { fill-gea-style/.style = fill-gea-style-1 }
+          },
+        draw-item =
+          {
+            \path [ fill-gea-style-1 ] \pgfextra
+              {
+                \pgfpathrectanglecorners{\pgfqpoint { - \l__tikzfill_gea_xb_tl } { 0pt }}
+                                        {\pgfqpoint { \l__tikzfill_gea_xb_tl } { \l__tikzfill_gea_yc_tl }}
+              } ;
+            \path [ fill-gea-style-2 ] \pgfextra
+              {
+                \pgfpathrectanglecorners{\pgfqpoint { - \l__tikzfill_gea_xb_tl } { - \l__tikzfill_gea_yc_tl }}
+                                        {\pgfqpoint { \l__tikzfill_gea_xb_tl } { 0pt }}
+              } ;
+            \path [ fill-gea-style-3 ] \pgfextra
+              {
+                \pgfpathmoveto{\pgfqpoint { \l__tikzfill_gea_xb_tl } { 0pt }}
+                \pgfpathlineto{\pgfqpoint { \l__tikzfill_gea_xa_tl } { - \l__tikzfill_gea_ya_tl }}
+                \pgfpathlineto{\pgfqpoint { \l__tikzfill_gea_xa_tl } { \l__tikzfill_gea_ya_tl }}
+                \pgfpathclose
+              } ;
+            \path [ fill-gea-style-4 ] \pgfextra
+              {
+                \pgfpathmoveto{\pgfqpoint { \l__tikzfill_gea_xb_tl } { 0pt }}
+                \pgfpathlineto{\pgfqpoint { \l__tikzfill_gea_xa_tl } { \l__tikzfill_gea_ya_tl }}
+                \pgfpathlineto{\pgfqpoint { \l__tikzfill_gea_xb_tl } { \l__tikzfill_gea_yc_tl }}
+                \pgfpathclose
+              } ;
+            \path [ fill-gea-style-5 ] \pgfextra
+              {
+                \pgfpathmoveto{\pgfqpoint { \l__tikzfill_gea_xb_tl } { \l__tikzfill_gea_yc_tl }}
+                \pgfpathlineto{\pgfqpoint { \l__tikzfill_gea_xa_tl } { \l__tikzfill_gea_ya_tl }}
+                \pgfpathlineto{\pgfqpoint { 0pt } { \l__tikzfill_gea_yb_tl }}
+                \pgfpathclose
+              } ;
+            \path [ fill-gea-style-6 ] \pgfextra
+              {
+                \pgfpathmoveto{\pgfqpoint { \l__tikzfill_gea_xb_tl } { \l__tikzfill_gea_yc_tl }}
+                \pgfpathlineto{\pgfqpoint { 0pt } { \l__tikzfill_gea_yb_tl }}
+                \pgfpathlineto{\pgfqpoint { - \l__tikzfill_gea_xb_tl } { \l__tikzfill_gea_yc_tl }}
+                \pgfpathclose
+              } ;
+            \path [ fill-gea-style-7 ] \pgfextra
+              {
+                \pgfpathmoveto{\pgfqpoint {  - \l__tikzfill_gea_xb_tl } { \l__tikzfill_gea_yc_tl }}
+                \pgfpathlineto{\pgfqpoint { 0pt } { \l__tikzfill_gea_yb_tl }}
+                \pgfpathlineto{\pgfqpoint { - \l__tikzfill_gea_xa_tl } { \l__tikzfill_gea_ya_tl }}
+                \pgfpathclose
+              } ;
+            \path [ fill-gea-style-8 ] \pgfextra
+              {
+                \pgfpathmoveto{\pgfqpoint { - \l__tikzfill_gea_xb_tl } { \l__tikzfill_gea_yc_tl }}
+                \pgfpathlineto{\pgfqpoint { - \l__tikzfill_gea_xa_tl } { \l__tikzfill_gea_ya_tl }}
+                \pgfpathlineto{\pgfqpoint { - \l__tikzfill_gea_xb_tl } { 0pt }}
+                \pgfpathclose
+              } ;
+            \path [ fill-gea-style-9 ] \pgfextra
+              {
+                \pgfpathmoveto{\pgfqpoint { - \l__tikzfill_gea_xb_tl } { 0pt }}
+                \pgfpathlineto{\pgfqpoint { - \l__tikzfill_gea_xa_tl } { \l__tikzfill_gea_ya_tl }}
+                \pgfpathlineto{\pgfqpoint { - \l__tikzfill_gea_xa_tl } { - \l__tikzfill_gea_ya_tl }}
+                \pgfpathclose
+              } ;
+            \path [ fill-gea-style-10 ] \pgfextra
+              {
+                \pgfpathmoveto{\pgfqpoint { - \l__tikzfill_gea_xb_tl } { 0pt }}
+                \pgfpathlineto{\pgfqpoint { - \l__tikzfill_gea_xa_tl } { - \l__tikzfill_gea_ya_tl }}
+                \pgfpathlineto{\pgfqpoint { - \l__tikzfill_gea_xb_tl } { - \l__tikzfill_gea_yc_tl }}
+                \pgfpathclose
+              } ;
+            \path [ fill-gea-style-11 ] \pgfextra
+              {
+                \pgfpathmoveto{\pgfqpoint { - \l__tikzfill_gea_xb_tl } { - \l__tikzfill_gea_yc_tl }}
+                \pgfpathlineto{\pgfqpoint { - \l__tikzfill_gea_xa_tl } { - \l__tikzfill_gea_ya_tl }}
+                \pgfpathlineto{\pgfqpoint { 0pt } { - \l__tikzfill_gea_yb_tl }}
+                \pgfpathclose
+              } ;
+            \path [ fill-gea-style-12 ] \pgfextra
+              {
+                \pgfpathmoveto{\pgfqpoint { - \l__tikzfill_gea_xb_tl } { - \l__tikzfill_gea_yc_tl }}
+                \pgfpathlineto{\pgfqpoint { 0pt } { - \l__tikzfill_gea_yb_tl }}
+                \pgfpathlineto{\pgfqpoint { \l__tikzfill_gea_xb_tl } { - \l__tikzfill_gea_yc_tl }}
+                \pgfpathclose
+              } ;
+            \path [ fill-gea-style-13 ] \pgfextra
+              {
+                \pgfpathmoveto{\pgfqpoint { \l__tikzfill_gea_xb_tl } { - \l__tikzfill_gea_yc_tl }}
+                \pgfpathlineto{\pgfqpoint { 0pt } { - \l__tikzfill_gea_yb_tl }}
+                \pgfpathlineto{\pgfqpoint { \l__tikzfill_gea_xa_tl } { - \l__tikzfill_gea_ya_tl }}
+                \pgfpathclose
+              } ;
+            \path [ fill-gea-style-14 ] \pgfextra
+              {
+                \pgfpathmoveto{\pgfqpoint { \l__tikzfill_gea_xb_tl } { - \l__tikzfill_gea_yc_tl }}
+                \pgfpathlineto{\pgfqpoint { \l__tikzfill_gea_xa_tl } { - \l__tikzfill_gea_ya_tl }}
+                \pgfpathlineto{\pgfqpoint { \l__tikzfill_gea_xb_tl } { 0pt }}
+                \pgfpathclose
+              } ;
+          },
+        #1
+      }},
+    fill~gea~Scheckenhofen / .style =  { fill~gea~Alpersdorf =
+      {
+        draw-item> =
+          {
+            \colorlet { _gea_prime_1_ } { \l_tikzfill_gea_prime_col_i_tl }
+            \colorlet { _gea_prime_2_ } { \l_tikzfill_gea_prime_col_ii_tl }
+            \colorlet { _gea_prime_1_a_ } { _gea_prime_1_ ! 60 ! white }
+            \colorlet { _gea_prime_1_b_ } { _gea_prime_1_ ! 20 ! white }
+            \colorlet { _gea_prime_2_a_ } { _gea_prime_2_ ! 60 ! white }
+            \colorlet { _gea_prime_2_b_ } { _gea_prime_2_ ! 20 ! white }
+          },
+        style~1 = { fill-gea-style-base, fill=_gea_prime_2_b_ },
+        style~2 = { fill-gea-style-base, fill=_gea_prime_1_b_ },
+        style~3 = { fill-gea-style-base, fill=_gea_prime_1_b_ },
+        style~4 = { fill-gea-style-base, fill=_gea_prime_2_ },
+        style~5 = { line~join=bevel, fill-gea-style-base, fill=_gea_prime_1_a_ },
+        style~6 = { fill-gea-style-base, fill=_gea_prime_1_ },
+        style~7 = { line~join=bevel, fill-gea-style-base, fill=_gea_prime_1_b_ },
+        style~8 = { fill-gea-style-base, fill=_gea_prime_2_a_ },
+        style~9 = { fill-gea-style-base, fill=_gea_prime_2_b_ },
+        style~10 = { fill-gea-style-base, fill=_gea_prime_1_a_ },
+        style~11 = { line~join=bevel, fill-gea-style-base, fill=_gea_prime_2_b_ },
+        style~12 = { fill-gea-style-base, fill=_gea_prime_2_ },
+        style~13 = { line~join=bevel, fill-gea-style-base, fill=_gea_prime_2_a_ },
+        style~14 = { fill-gea-style-base, fill=_gea_prime_1_ },
+        #1
+      }},
+    fill~gea~Schwarzberg / .style =  { fill~gea~Alpersdorf =
+      {
+        style~1 = { fill-gea-style-base },
+        style~2 = { fill-gea-style-base },
+        style~3 = { fill-gea-style-base },
+        style~4 = { fill-gea-style-base },
+        style~5 = { line~join=bevel, fill-gea-style-base },
+        style~6 = { fill-gea-style-base },
+        style~7 = { line~join=bevel, fill-gea-style-base },
+        style~8 = { fill-gea-style-base },
+        style~9 = { fill-gea-style-base },
+        style~10 = { fill-gea-style-base },
+        style~11 = { line~join=bevel, fill-gea-style-base },
+        style~12 = { fill-gea-style-base },
+        style~13 = { line~join=bevel, fill-gea-style-base },
+        style~14 = { fill-gea-style-base },
         #1
       }},
   }

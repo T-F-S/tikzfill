@@ -1,6 +1,6 @@
 % \LaTeX-Main\
 % !TeX encoding=UTF-8
-%% The LaTeX package tikzfill - version 1.1.0 (2026/03/26)
+%% The LaTeX package tikzfill - version 1.2.0 (2026/04/23)
 %% tikzfill.tex: Manual
 %%
 %% -------------------------------------------------------------------------------------------
@@ -37,37 +37,50 @@
 % \usepackage{tikzfill}
 % \usepackage[skins,breakable]{tcolorbox}
 % \begin{document}
-\begin{tcolorbox}[spread,blankest,phantom={\thispagestyle{empty}}]
-\begin{tikzpicture}
-\path
-    [
-      preaction={fill=black},
-      fill gea Weihmichl =
-      {
+\begin{tcolorbox}[
+  spread,
+  blankest,
+  center upper,
+  phantom      = \thispagestyle{empty},
+  top          = 65mm,
+  fontupper    = \bfseries,
+  frame engine = path,
+  frame style  = {
+    fill = none,
+    preaction = {
+      fill gea Weihmichl = {
         scale fixed = 1,
-        xstep = 21mm,
+        xstep       = 21mm,
         ystep equidistance,
-        init-row< = \TFRowColorLet{mycolor}{red}{blue},
+        style 1 = {},
+        style 2 = {fill=black!5},
+        style 3 = {fill=black!10},
+        draw-if-row-col =
+          {11/5,11/6,12/4,12/5,12/6,12/7,12/8,13/3,13/4,13/5,13/6,13/7,13/8},
         freeze-row,
-        style 1 = {fill=mycolor!50!white},
-        style 2 = {fill=mycolor},
-        style 3 = {fill=mycolor!50!black},
       },
-    ]
-    (-\tcbtextwidth/2,-\tcbtextheight/2) rectangle
-    (\tcbtextwidth/2,\tcbtextheight/2);
-\node[white,font=\Huge\bfseries] (title) at (0,\tcbtextheight/4)
-     {The \texttt{tikzfill} package};
-\node[white,font=\Large\bfseries,below=8mm] (title) at (title.south)
-     {Manual for version \version\ (\datum)};
-\node[white,font=\large\bfseries,below=8mm] (title) at (title.south)
-     {Thomas F.~Sturm};
-\end{tikzpicture}
+    },
+    fill gea Edenland = {
+      scale fixed = 1,
+      xstep       = 21mm,
+      ystep equidistance,
+      init-row< = \TFRowColorLet{mycolor}{red}{blue},
+      prime color 1 = mycolor,
+      draw-if-not-row-col =
+        {11/5,11/6,12/4,12/5,12/6,12/7,12/8,13/3,13/4,13/5,13/6,13/7,13/8},
+      freeze-row,
+    },
+  },
+]
+  \Huge  The \texttt{tikzfill} package\\[10mm]
+  \Large Manual for version \version\ (\datum)\\[10mm]
+  \large Thomas F.~Sturm
 \end{tcolorbox}
 % \end{document}
 \end{tcboutputlisting}
 \tcbuselistingtext
 \tcbinputlisting{title=Cover code,docexample,listing only}
+
 
 \clearpage
 
@@ -1413,13 +1426,11 @@ Section~\ref{sec:gea-templates}) and adjust its geometry and colors.
 
 \begin{dispExample*}{gea-example}
 \begin{tikzpicture}
-\draw[ fill gea Weihmichl = {
+\draw[ fill gea Edenland = {
   scale fixed = 1,
-  ystep equidistance,
+  step equi = 10mm,
   init-row< = \TFRowColorLet{mycolor}{red}{blue},
-  style 1 = {fill=mycolor!50!white},
-  style 2 = {fill=mycolor},
-  style 3 = {fill=mycolor!50!black},
+  prime color 1 = mycolor,
   freeze-row,
 }]
   (0,0) rectangle (4,4);
@@ -1459,6 +1470,7 @@ Section~\ref{sec:gea-templates}) and adjust its geometry and colors.
 
 
 \clearpage
+
 \begin{docGeaKeys}
   {
     {
@@ -1837,9 +1849,82 @@ represents the interpolated scale value according to the specified interpolation
 \end{dispExample*}
 \end{docGeaKeys}
 
+\clearpage
 
+\begin{docGeaKeys}
+  [
+      doc key choices* = {true,false},
+      doc description  = {default \texttt{true}, initially \texttt{false}},
+  ]
+  {
+    {
+      doc name        = xflip,
+      doc new         = 2026-04-14,
+    },
+    {
+      doc name        = xflip even,
+    },
+    {
+      doc name        = xflip odd,
+    }
+  }
+  For drawing an item in the geometric array, the $x$-value of all coordinates is
+  multiplied by $-1$, resulting in a reflection across the $y$-axis. This can be
+  applied to all items or restricted to items in even or odd rows.
+\begin{dispExample*}{gea-example}
+\begin{tikzpicture}
+\draw[
+  fill gea Hohenthann = {
+    scale fixed = 1,
+    step equi* double = 10mm,
+    style 1 = {draw=white, fill=blue},
+    text<={\color{yellow}RL},
+    xflip odd,
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docGeaKeys}
+
+
+\begin{docGeaKeys}
+  [
+      doc key choices* = {true,false},
+      doc description  = {default \texttt{true}, initially \texttt{false}},
+  ]
+  {
+    {
+      doc name        = yflip,
+      doc new         = 2026-04-14,
+    },
+    {
+      doc name        = yflip even,
+    },
+    {
+      doc name        = yflip odd,
+    }
+  }
+  For drawing an item in the geometric array, the $y$-value of all coordinates is
+  multiplied by $-1$, resulting in a reflection across the $x$-axis. This can be
+  applied to all items or restricted to items in even or odd rows.
+\begin{dispExample*}{gea-example}
+\begin{tikzpicture}
+\draw[
+  fill gea Pfettrach = {
+    step half = 15mm,
+    style 1 = { fill = red!40 },
+    style 2 = { fill = red },
+    text<={\color{yellow}RL},
+    yflip even,
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docGeaKeys}
 
 \clearpage
+
+
 %-------------------------------------------------------------------------------
 \subsection{Custom Creation of Geometric Arrays}
 
@@ -2039,6 +2124,199 @@ Code can be inserted at these four positions using the following options:
 
 \clearpage
 
+\begin{docKeys}
+  {
+    {
+      doc name        = draw-if-row-col,
+      doc parameter   = {=\marg{coordinate list}},
+      doc keypath     = tikz/geomarray,
+      doc description = {initially unset},
+      doc new         = 2026-04-17,
+    },
+  }
+  Restricts item drawing to those items whose coordinates are contained in the
+  specified comma-separated \meta{coordinate list} of type \meta{row}/\meta{col}.
+  The keys \refKey{/tikz/geomarray/init<} and \refKey{/tikz/geomarray/init-item<}
+  are used to append the corresponding code.
+\begin{dispExample*}{gea-example}
+% \usepackage{opencolor}
+\begin{tikzpicture}
+\draw[
+  preaction = {
+    fill gea Bruckberg = {
+      scale fixed = 1, step equi = 7mm,
+      style 1     = { draw = oc-gray-1 },
+      freeze-row,
+      },
+  },
+  fill gea Bruckberg = {
+    scale fixed = 1, step equi = 7mm,
+    style 1 = {
+      draw         = oc-blue-9,
+      top color    = oc-blue-2,
+      bottom color = oc-blue-4  },
+    debug text,
+    draw-if-row-col = { 4/5, 3/1, 3/4, 6/2 },
+}]
+  (0,0) rectangle (4,6);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docKeys}
+
+
+\begin{docKeys}
+  {
+    {
+      doc name        = draw-if-not-row-col,
+      doc parameter   = {=\marg{coordinate list}},
+      doc keypath     = tikz/geomarray,
+      doc description = {initially unset},
+      doc new         = 2026-04-20,
+    },
+  }
+  Restricts item drawing to those items whose coordinates are not contained in the
+  specified comma-separated \meta{coordinate list} of type \meta{row}/\meta{col}.
+  The keys \refKey{/tikz/geomarray/init<} and \refKey{/tikz/geomarray/init-item<}
+  are used to append the corresponding code.
+\begin{dispExample*}{gea-example}
+% \usepackage{opencolor}
+\begin{tikzpicture}
+\draw[
+  preaction = { fill = oc-teal-1 },
+  fill gea Pfettrach = {
+    scale fixed = 0.96, step half = 10mm,
+    style 1 = { fill = oc-teal-2 },
+    style 2 = { fill = oc-teal-4 },
+    draw-if-not-row-col = { 4/3, 4/4, 5/3, 10/2 },
+    freeze-row,
+  }
+]
+  (0,0) rectangle (4,6);
+\node at (1,5) {Hello};
+\node at (2.5,2.2) {World};
+\end{tikzpicture}
+\end{dispExample*}
+\end{docKeys}
+
+
+\clearpage
+
+\begin{docKeys}
+  [
+      doc keypath     = tikz/geomarray,
+      doc description = {initially unset},
+  ]
+  {
+    {
+      doc name        = draw-if-row,
+      doc parameter   = {=\marg{row list}},
+      doc new         = 2026-04-21,
+    },
+    {
+      doc name        = draw-if-not-row,
+      doc parameter   = {=\marg{row list}},
+    },
+    {
+      doc name        = draw-if-even-row,
+    },
+    {
+      doc name        = draw-if-odd-row,
+    },
+  }
+  Restricts item drawing to those items whose rows are
+  \begin{itemize}
+  \item contained in the specified comma-separated \meta{row list},
+  \item not contained in the specified comma-separated \meta{row list},
+  \item even,
+  \item odd, respectively.
+  \end{itemize}
+  The keys \refKey{/tikz/geomarray/init<} and \refKey{/tikz/geomarray/init-row<}
+  are used to append the corresponding code.
+\end{docKeys}
+
+
+\begin{docKeys}
+  [
+      doc keypath     = tikz/geomarray,
+      doc description = {initially unset},
+  ]
+  {
+    {
+      doc name        = draw-if-col,
+      doc parameter   = {=\marg{column list}},
+      doc new         = 2026-04-21,
+    },
+    {
+      doc name        = draw-if-not-col,
+      doc parameter   = {=\marg{column list}},
+    },
+    {
+      doc name        = draw-if-even-col,
+    },
+    {
+      doc name        = draw-if-odd-col,
+    },
+  }
+  Restricts item drawing to those items whose columns are
+  \begin{itemize}
+  \item contained in the specified comma-separated \meta{column list},
+  \item not contained in the specified comma-separated \meta{column list},
+  \item even,
+  \item odd, respectively.
+  \end{itemize}
+  The keys \refKey{/tikz/geomarray/init<} and \refKey{/tikz/geomarray/init-item<}
+  are used to append the corresponding code.
+\end{docKeys}
+
+
+
+
+\begin{docKeys}
+  {
+    {
+      doc name        = draw-if-random,
+      doc parameter   = {=\meta{probability}},
+      doc keypath     = tikz/geomarray,
+      doc description = {initially unset},
+      doc new         = 2026-04-17,
+    },
+  }
+  Restricts item drawing to random items with given
+  \mbox{\meta{probability}$\in[0,1]$}.
+  The keys \refKey{/tikz/geomarray/init<} and \refKey{/tikz/geomarray/init-item<}
+  are used to append the corresponding code.
+\begin{dispExample*}{gea-example}
+% \usepackage{opencolor}
+\begin{tikzpicture}
+\ExplSyntaxOn
+\sys_gset_rand_seed:n {1701}
+\ExplSyntaxOff
+\draw[
+  preaction = {
+    fill gea Bruckberg = {
+      scale fixed = 1, step equi = 7mm,
+      style 1     = { draw = oc-gray-1 },
+      freeze-row,
+      },
+  },
+  fill gea Bruckberg = {
+    scale fixed = 1, step equi = 7mm,
+    style 1 = {
+      draw         = oc-lime-9,
+      top color    = oc-lime-2,
+      bottom color = oc-lime-4  },
+    debug text,
+    draw-if-random = 0.33,
+}]
+  (0,0) rectangle (4,6);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docKeys}
+
+
+
+\clearpage
+
 \begin{docGeaKeys}
   [
       doc parameter   = {=\marg{options}\marg{text}},
@@ -2126,7 +2404,7 @@ Code can be inserted at these four positions using the following options:
     {
       doc name        = style 1,
       doc description = {initially |fill=red|},
-      doc new         = 2026-03-18,
+      doc new and updated = {2026-03-18}{2026-04-14},
     },
     {
       doc name        = style 2,
@@ -2160,13 +2438,40 @@ Code can be inserted at these four positions using the following options:
       doc name        = style 9,
       doc description = {initially |fill=purple|},
     },
+    {
+      doc name        = style 10,
+      doc description = {initially |fill=lime|},
+    },
+    {
+      doc name        = style 11,
+      doc description = {initially |fill=olive|},
+    },
+    {
+      doc name        = style 12,
+      doc description = {initially |fill=pink|},
+    },
+    {
+      doc name        = style 13,
+      doc description = {initially |fill=teal|},
+    },
+    {
+      doc name        = style 14,
+      doc description = {initially |fill=violet|},
+    },
+    {
+      doc name        = style base,
+      doc description = {initially empty},
+    },
   }
   These convenience options generate styles named\\
   \docAuxKey[tikz]{fill-gea-style-1}, \docAuxKey[tikz]{fill-gea-style-2},\\
   \docAuxKey[tikz]{fill-gea-style-3}, \docAuxKey[tikz]{fill-gea-style-4},\\
   \docAuxKey[tikz]{fill-gea-style-5}, \docAuxKey[tikz]{fill-gea-style-6},\\
   \docAuxKey[tikz]{fill-gea-style-7}, \docAuxKey[tikz]{fill-gea-style-8},\\
-  and \docAuxKey[tikz]{fill-gea-style-9}.\\
+  \docAuxKey[tikz]{fill-gea-style-9}, \docAuxKey[tikz]{fill-gea-style-10},\\
+  \docAuxKey[tikz]{fill-gea-style-11}, \docAuxKey[tikz]{fill-gea-style-12},\\
+  \docAuxKey[tikz]{fill-gea-style-13}, \docAuxKey[tikz]{fill-gea-style-14},\\
+  and \docAuxKey[tikz]{fill-gea-style-base}.\\
   Styles of this kind are used within templates (see
   Section~\ref{sec:gea-templates}) for drawing. The style
   \docAuxKey[tikz]{fill-gea-style-1} is also used in the default configuration.
@@ -2189,6 +2494,50 @@ Code can be inserted at these four positions using the following options:
 \end{docKeys}
 
 
+\begin{docKeys}
+  [
+      doc parameter   = {=\meta{color}},
+      doc keypath     = tikz/geomarray,
+  ]
+  {
+    {
+      doc name        = prime color 1,
+      doc description = {initially |red|},
+      doc new         = {2026-04-14},
+    },
+    {
+      doc name        = prime color 2,
+      doc description = {initially |blue|},
+    },
+  }
+  These convenience options assign the specified \meta{color} to the L3 token
+  lists \docAuxCommand{l_tikzfill_gea_prime_col_i_tl} and
+  \docAuxCommand{l_tikzfill_gea_prime_col_ii_tl}. The \meta{color} must be a valid
+  |xcolor| color expression.\\
+  Some templates (e.g. \refKey{/tikz/fill gea Marktstauden})
+  use these settings for drawing.
+\end{docKeys}
+
+
+
+\begin{docKeys}
+  {
+    {
+      doc name        = ratio,
+      doc parameter   = {=\meta{fp expr}},
+      doc keypath     = tikz/geomarray,
+      doc description = {initially |1|},
+      doc new         = {2026-04-14},
+    }
+  }
+  This convenience option assigns the evaluated floating point expression \meta{fp expr} to the L3 token
+  list \docAuxCommand{l_tikzfill_gea_ratio_tl}.\\
+  Some templates (e.g. \refKey{/tikz/fill gea Niederhatzkofen})
+  use this setting for drawing.
+\end{docKeys}
+
+
+
 \clearpage
 \begin{docGeaKeys}
   {
@@ -2197,9 +2546,16 @@ Code can be inserted at these four positions using the following options:
       doc parameter   = {\colOpt{=\meta{color}}},
       doc description = {default |black|, initially |black|},
       doc new         = 2026-03-18,
+    },
+    {
+      doc name        = debug node,
+      doc parameter   = {\colOpt{=\marg{options}}},
+      doc description = {default |black|, initially |black|},
+      doc new         = 2026-04-14,
     }
   }
-  Prints the row and column numbers in the specified \meta{color}. Note that this
+  Prints the row and column numbers in the specified \meta{color}
+  or with the specified \meta{options}. Note that this
   option appends drawing code; therefore, it should be specified after other
   drawing settings. It is intended for debugging or for identifying a specific
   item.\par
@@ -2215,7 +2571,10 @@ Code can be inserted at these four positions using the following options:
   \refKey{/tikz/geomarray/debug text} displays the current pair consisting of
   \docAuxCommand{l_tikzfill_gea_row_tl} and \docAuxCommand{l_tikzfill_gea_col_tl}.\par
   Note that at least the first and last row or column may lie partially or entirely
-  outside the clipping area.
+  outside the clipping area.\par
+  \refKey{/tikz/geomarray/debug text} is based on \refKey{/tikz/geomarray/text<},
+  while
+  \refKey{/tikz/geomarray/debug node} is based on \refKey{/tikz/geomarray/node<}.
 \begin{dispExample*}{gea-example}
 \begin{tikzpicture}
 \draw[
@@ -2240,6 +2599,9 @@ each row contains uniform items. For each row, an item is drawn only once into a
 box (\enquote{frozen}), and this box is then copied to fill the row.\par
 Depending on the complexity of the graphical code, this can reduce compilation
 time. However, note the restriction that all items within a row must be uniform.
+Also note that applying \refKey{/tikz/geomarray/freeze-row} may shift the
+geometric array if the center of an item's enclosing box is not identical to its
+origin.
 \end{docGeaKeys}
 
 
@@ -2662,8 +3024,6 @@ time. However, note the restriction that all items within a row must be uniform.
   \refKey{/tikz/geomarray/style 1},
   \refKey{/tikz/geomarray/style 2}, and
   \refKey{/tikz/geomarray/style 3}, are used for the three parts.
-
-
 \begin{dispExample*}{gea-example}
 % \usepackage{opencolor}
 \begin{tikzpicture}
@@ -2683,8 +3043,73 @@ time. However, note the restriction that all items within a row must be uniform.
 \end{docTikzKeys}
 
 
+\begin{docTikzKeys}
+  {
+    {
+      doc name        = fill gea Edenland,
+      doc parameter   = {=\marg{options}},
+      doc description = {initially unset},
+      doc new         = 2026-04-20,
+    }
+  }
+  This is a variation of \refKey{/tikz/fill gea Weihmichl} in which a
+  prime color, \refKey{/tikz/geomarray/prime color 1}, defines
+  the individual colors of the three parts. The key \refKey{/tikz/geomarray/style base}
+  specifies a style applied to all parts.
+\begin{dispExample*}{gea-example}
+\ExplSyntaxOn
+\sys_gset_rand_seed:n {12345}
+\ExplSyntaxOff
+\begin{tikzpicture}
+\draw[ fill gea Edenland = {
+  scale fixed = 1,
+  step equi = 10mm,
+  ystep equidistance,
+  style base = draw,
+  init-item< = \TFDefineRandomColor{mycolor},
+  prime color 1 = mycolor,
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docTikzKeys}
+
+
 
 \clearpage
+
+\begin{docTikzKeys}
+  {
+    {
+      doc name        = fill gea Baumgarten,
+      doc parameter   = {=\marg{options}},
+      doc description = {initially unset},
+      doc new         = 2026-04-21,
+    }
+  }
+  This template consists of two quadrilaterals arranged in an L-shape.
+  \refKey{/tikz/geomarray/style 1} and
+  \refKey{/tikz/geomarray/style 2} are used for the two parts.
+
+\begin{dispExample*}{gea-example}
+% \usepackage{opencolor}
+\begin{tikzpicture}
+\draw[
+  fill gea Baumgarten = {
+    scale fixed = 1,
+    step double = 5mm,
+    style 1 = { draw, top color=oc-cyan-3,
+                bottom color=oc-cyan-5 },
+    style 2 = { draw, top color=oc-indigo-3,
+                bottom color=oc-indigo-5 },
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docTikzKeys}
+
+
+
 \begin{docTikzKeys}
   {
     {
@@ -2791,8 +3216,6 @@ time. However, note the restriction that all items within a row must be uniform.
   \refKey{/tikz/geomarray/style 1},
   \refKey{/tikz/geomarray/style 2}, and
   \refKey{/tikz/geomarray/style 3}, are used for the three parts.
-
-
 \begin{dispExample*}{gea-example}
 \ExplSyntaxOn
 \sys_gset_rand_seed:n {42}
@@ -2807,6 +3230,38 @@ time. However, note the restriction that all items within a row must be uniform.
     style 2 = {fill=mycolor},
     style 3 = {fill=mycolor!50!black},
     angle=30,
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docTikzKeys}
+
+
+\begin{docTikzKeys}
+  {
+    {
+      doc name        = fill gea Klosterholz,
+      doc parameter   = {=\marg{options}},
+      doc description = {initially unset},
+      doc new         = 2026-04-20,
+    }
+  }
+  This is a variation of \refKey{/tikz/fill gea Hascherkeller} in which a
+  prime color, \refKey{/tikz/geomarray/prime color 1}, defines
+  the individual colors of the three parts. The key \refKey{/tikz/geomarray/style base}
+  specifies a style applied to all parts.
+\begin{dispExample*}{gea-example}
+% \usepackage{opencolor}
+\begin{tikzpicture}
+\draw[
+  fill gea Klosterholz = {
+    scale fixed = 1,
+    step equi = 8mm,
+    init-row< = \TFRowColorLet{mycolor}
+      {oc-lime-4}{oc-teal-4},
+    prime color 1 = mycolor,
+    style base = {draw=oc-gray-8,line join=round},
+    freeze-row,
 }]
   (0,0) rectangle (4,4);
 \end{tikzpicture}
@@ -2898,6 +3353,70 @@ time. However, note the restriction that all items within a row must be uniform.
     step = 6mm,
     style 1 = {bottom color=red, top color=red!50},
     style 2 = {bottom color=blue, top color=blue!50},
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docTikzKeys}
+
+
+\clearpage
+
+\begin{docTikzKeys}
+  {
+    {
+      doc name        = fill gea Ostergaden,
+      doc parameter   = {=\marg{options}},
+      doc description = {initially unset},
+      doc new         = 2026-04-22,
+    }
+  }
+  This template consists of a rectangle with two attached
+  hexagons.
+  An optical illusion creates the impression of an octogon.
+
+  \refKey{/tikz/geomarray/style 1},
+  \refKey{/tikz/geomarray/style 2}, and\\
+  \refKey{/tikz/geomarray/style 3} are used for the three parts.
+
+  The ratio between the inner rectangle and the (theoretical)
+  base rectangle is controlled by
+  \refKey{/tikz/geomarray/ratio}, which defaults to $2-\sqrt{2}$.
+  For equal values of \refKey{/tikz/geomarray/xstep} and
+  \refKey{/tikz/geomarray/ystep}, this default produces the impression of a
+  regular octagon.
+
+\begin{dispExample*}{gea-example}
+% \usepackage{opencolor}
+\begin{tikzpicture}
+\draw[
+  fill gea Ostergaden = {
+    scale fixed = 1,
+    step equi = 7mm,
+    style 1 = { draw, top color=oc-red-3,
+                bottom color=oc-red-4 },
+    style 2 = { draw, fill=oc-indigo-3 },
+    style 3 = { draw, fill=oc-blue-3 },
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+
+
+\begin{dispExample*}{gea-example}
+% \usepackage{opencolor}
+\begin{tikzpicture}
+\draw[
+  fill gea Ostergaden = {
+    ratio = 1/3,
+    scale fixed = 1,
+    step equi = 7mm,
+    style 1 = { draw, fill=oc-teal-8 },
+    style 2 = { draw, top color=oc-lime-2,
+                bottom color=oc-lime-5 },
+    style 3 = { draw, top color=oc-blue-2,
+                bottom color=oc-blue-5 },
+    angle = 45,
 }]
   (0,0) rectangle (4,4);
 \end{tikzpicture}
@@ -3244,8 +3763,270 @@ time. However, note the restriction that all items within a row must be uniform.
 \end{docTikzKeys}
 
 
+
+\clearpage
+\begin{docTikzKeys}
+  {
+    {
+      doc name        = fill gea Niederhatzkofen,
+      doc parameter   = {=\marg{options}},
+      doc description = {initially unset},
+      doc new         = 2026-04-17,
+    }
+  }
+  The basic item shape of this template is a hexagon divided into nine parts,
+  three of which form an inner hexagon surrounded by the remaining six parts. The
+  styles \refKey{/tikz/geomarray/style 1} to \refKey{/tikz/geomarray/style 9} are
+  used for these nine parts.
+
+  The ratio between the inner and outer hexagon is controlled by
+  \refKey{/tikz/geomarray/ratio}, which defaults to $\frac{1}{\sqrt{3}}$. Notable
+  ratio values include:
+  \begin{itemize}
+  \item $\rule[-2mm]{0mm}{6mm}\frac{1}{\sqrt{3}}$: all nine parts have equal area.
+  \item $\rule[-2mm]{0mm}{6mm}\frac13$: intersections are equally spaced.
+  \item $\rule[-2mm]{0mm}{6mm}\frac12$: triangular structures become visible.
+  \item $\rule[-2mm]{0mm}{6mm}\frac23$: three hexagonal structures become visible.
+  \end{itemize}
+\begin{dispExample*}{gea-example}
+% \usepackage{opencolor}
+\begin{tikzpicture}
+\draw[
+  fill gea Niederhatzkofen = {
+    scale fixed = 1,
+    step equi = 15mm,
+    style 1 = {draw, fill=oc-teal-5},
+    style 2 = {draw, fill=oc-cyan-5},
+    style 3 = {draw, fill=oc-grape-5},
+    style 4 = {draw, fill=oc-violet-5},
+    style 5 = {draw, fill=oc-indigo-5},
+    style 6 = {draw, fill=oc-blue-5},
+    style 7 = {draw, fill=oc-yellow-5},
+    style 8 = {draw, fill=oc-green-5},
+    style 9 = {draw, fill=oc-lime-5},
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docTikzKeys}
+
+
+\begin{docTikzKeys}
+  {
+    {
+      doc name        = fill gea Eggerach,
+      doc parameter   = {=\marg{options}},
+      doc description = {initially unset},
+      doc new         = 2026-04-23,
+    }
+  }
+  This is a variation of \refKey{/tikz/fill gea Niederhatzkofen} in which
+  \refKey{/tikz/geomarray/style base}
+  specifies a style applied to all nine parts.
+\begin{dispExample*}{gea-example}
+\begin{tikzpicture}
+\draw[
+  fill gea Eggerach = {
+    scale fixed = 1,
+    step equi = 15mm,
+    xflip even,
+    style base = {draw, top color=red!10,
+      bottom color=red!50},
+    angle = 30,
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docTikzKeys}
+
+
+\clearpage
+\begin{docTikzKeys}
+  {
+    {
+      doc name        = fill gea Marktstauden,
+      doc parameter   = {=\marg{options}},
+      doc description = {initially unset},
+      doc new         = 2026-04-17,
+    }
+  }
+  This is a variation of \refKey{/tikz/fill gea Niederhatzkofen} in which two
+  prime colors, \refKey{/tikz/geomarray/prime color 1} and
+  \refKey{/tikz/geomarray/prime color 2}, define the individual colors of the six
+  outer and three inner parts. The key \refKey{/tikz/geomarray/style base}
+  specifies a style applied to all nine parts.
+\begin{dispExample*}{gea-example}
+% \usepackage{opencolor}
+\begin{tikzpicture}
+\draw[
+  fill gea Marktstauden = {
+    scale fixed = 1,
+    ratio = 1/3,
+    step equi = 15mm,
+    style base = { draw },
+    prime color 1 = oc-grape-5,
+    prime color 2 = oc-red-5,
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+
+\begin{dispExample*}{gea-example}
+% \usepackage{opencolor}
+\begin{tikzpicture}
+\draw[
+  fill gea Marktstauden = {
+    scale fixed = 1,
+    ratio = 0.5,
+    step equi = 15mm,
+    style base = { draw },
+    prime color 1 = oc-lime-5,
+    prime color 2 = oc-indigo-5,
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+
+\begin{dispExample*}{gea-example}
+% \usepackage{opencolor}
+\begin{tikzpicture}
+\draw[
+  fill gea Marktstauden = {
+    scale fixed = 1,
+    ratio = 2/3,
+    xflip even,
+    step equi = 15mm,
+    style base = { draw },
+    prime color 1 = oc-red-5,
+    prime color 2 = oc-yellow-5,
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+
+\end{docTikzKeys}
+
+
+
+\clearpage
+\begin{docKeys}
+  {
+    {
+      doc name        = fill gea Alpersdorf,
+      doc parameter   = {=\marg{options}},
+      doc keypath     = tikz,
+      doc description = {initially unset},
+      doc new         = 2026-04-17,
+    }
+  }
+  The basic item shape of this template is a hexagon divided into fourteen parts.
+  An optical illusion creates the impression of a decagon.
+  The styles \refKey{/tikz/geomarray/style 1} to \refKey{/tikz/geomarray/style 14} are used for these fourteen parts.
+
+  The option \refKey{/tikz/geomarray/triangular} is applied by default. The key
+  \refKey{/tikz/geomarray/step equi} produces squares and several equilateral
+  triangles. When the specialized key
+  \docAuxKey[tikz/geomarray]{step equi special} is used,
+  the six vertices of the hexagon lie on a circle.
+
+\begin{dispExample*}{gea-example}
+\begin{tikzpicture}
+\draw[
+  fill gea Alpersdorf = {
+    scale fixed = 1,
+    step equi = 15mm,
+    freeze-row,
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+
+\begin{dispExample*}{gea-example}
+\begin{tikzpicture}
+\draw[
+  fill gea Alpersdorf = {
+    scale fixed = 1,
+    step equi special = 15mm,
+    freeze-row,
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+
+\end{docKeys}
+
+
+
+\begin{docTikzKeys}
+  {
+    {
+      doc name        = fill gea Schwarzberg,
+      doc parameter   = {=\marg{options}},
+      doc description = {initially unset},
+      doc new         = 2026-04-23,
+    }
+  }
+  This is a variation of \refKey{/tikz/fill gea Alpersdorf} in which
+  \refKey{/tikz/geomarray/style base}
+  specifies a style applied to all fourteen parts.
+\begin{dispExample*}{gea-example}
+\begin{tikzpicture}
+\draw[
+  fill gea Schwarzberg = {
+    scale fixed = 1,
+    step equi special = 20mm,
+    style base = {draw, top color=white,
+      bottom color=blue!10},
+    angle = 90,
+    freeze-row,
+}]
+  (0,0) rectangle (4,4);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docTikzKeys}
+
+
+\clearpage
+
+\begin{docTikzKeys}
+  {
+    {
+      doc name        = fill gea Scheckenhofen,
+      doc parameter   = {=\marg{options}},
+      doc description = {initially unset},
+      doc new         = 2026-04-17,
+    }
+  }
+  This is a variation of \refKey{/tikz/fill gea Alpersdorf} in which two
+  prime colors, \refKey{/tikz/geomarray/prime color 1} and
+  \refKey{/tikz/geomarray/prime color 2}, define the individual colors of the
+  fourteen parts. The key \refKey{/tikz/geomarray/style base}
+  specifies a style applied to all parts.
+\begin{dispExample*}{gea-example}
+% \usepackage{opencolor}
+\begin{tikzpicture}
+\draw[
+  fill gea Scheckenhofen = {
+    scale fixed = 1,
+    step equi special = 15mm,
+    init-row< = \TFRowColorLetSeq{mycolor}
+      {oc-lime-4,oc-red-4,oc-cyan-4},
+    prime color 1 = mycolor,
+    prime color 2 = oc-yellow-4,
+    style base = { draw=black, line width=0.2pt },
+    angle = 90,
+    freeze-row,
+}]
+  (0,0) rectangle (4,6);
+\end{tikzpicture}
+\end{dispExample*}
+\end{docTikzKeys}
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \clearpage
 \printindex
+
 
 \end{document}

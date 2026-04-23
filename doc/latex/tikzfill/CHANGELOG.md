@@ -17,6 +17,35 @@ and this project adheres to
 
 
 
+## [1.2.0] - 2026-04-23
+
+### Added
+- Library `tikzfill.geomarray`:
+    TikZ Options:
+        `fill gea Niederhatzkofen`, `fill gea Marktstauden`, 
+        `fill gea Alpersdorf`, `fill gea Scheckenhofen`, `fill gea Edenland`,
+        `fill gea Klosterholz`, `fill gea Baumgarten`, `fill gea Ostergaden`,
+        `fill gea Eggerach`, `fill gea Schwarzberg`
+    Customization Options:
+        `xflip`, `xflip even`, `xflip odd`, `yflip`, `yflip even`, `yflip odd`,
+        `style base`, `style 10`, `style 11`, `style 12`, `style 13`, `style 14`,
+        `prime color 1`, `prime color 2`, `ratio`, `debug node`,
+        `draw-if-row-col`, `draw-if-not-row-col`,
+        `draw-if-row`, `draw-if-not-row`, `draw-if-even-row`, `draw-if-odd-row`,
+        `draw-if-col`, `draw-if-not-col`, `draw-if-even-col`, `draw-if-odd-col`,
+        `draw-if-random`
+    Read-only macros:
+        `\l_tikzfill_gea_prime_col_i_tl`, `\l_tikzfill_gea_prime_col_ii_tl`,
+        `\l_tikzfill_gea_ratio_tl`
+
+### Changed
+- Title page reworked
+
+### Fixed
+- Template `Weihmichl`
+
+
+
 ## [1.1.0] - 2026-03-26
 
 ### Added
